@@ -1,0 +1,12 @@
+work/
+outputs/
+.gradle/
+**/build/
+**/deps/
+local.properties
+*.keystore
+*.jks
+*.apk
+*.idsig
+.DS_Store
+__pycache__/

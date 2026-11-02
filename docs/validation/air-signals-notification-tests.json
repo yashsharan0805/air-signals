@@ -1,0 +1,527 @@
+{
+  "date": "2026-11-02",
+  "app_version": "0.3-preview",
+  "apk_sha256": "494eb5115981a9ae2828156e2cee5258111d9a409073d57c4c5ea79b841ae9a1",
+  "device_model": "SM-S9360",
+  "firmware": "67.20001.253.2",
+  "trials": [
+    {
+      "name": "single_initial",
+      "posted_count": 1,
+      "first_post_millis": 1793630803315,
+      "physical_report": "not confirmed; user requested resend",
+      "notifications": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793630803541
+        }
+      ],
+      "deliveries": [
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              150
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793630812025,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "warmLink": "kept"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 7470,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 8486,
+          "timestampMillis": 1793630812027
+        }
+      ],
+      "post_to_completion_millis": [
+        8712
+      ]
+    },
+    {
+      "name": "single_repeat",
+      "posted_count": 1,
+      "first_post_millis": 1793631113362,
+      "physical_report": "user confirmed feeling the vibration",
+      "notifications": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793631113586
+        }
+      ],
+      "deliveries": [
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              134
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793631119934,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "warmLink": "kept"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 5337,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 6352,
+          "timestampMillis": 1793631119937
+        }
+      ],
+      "post_to_completion_millis": [
+        6575
+      ]
+    },
+    {
+      "name": "burst_three",
+      "posted_count": 3,
+      "first_post_millis": 1793631227366,
+      "physical_report": "awaiting user confirmation",
+      "notifications": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793631227581
+        },
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "coalesced",
+          "groups": 1,
+          "timestampMillis": 1793631227831
+        },
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "coalesced",
+          "groups": 1,
+          "timestampMillis": 1793631227981
+        }
+      ],
+      "deliveries": [
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              595
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793631234028,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "warmLink": "kept"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 5444,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 6052,
+          "timestampMillis": 1793631234033
+        }
+      ],
+      "post_to_completion_millis": [
+        6667
+      ]
+    },
+    {
+      "name": "burst_repeat_locked",
+      "app_version": "0.3-preview",
+      "posted_count": 3,
+      "first_post_millis": 1793631520360,
+      "physical_report": "user confirmed one group while phone locked",
+      "notification_outcomes": [
+        "queued",
+        "coalesced",
+        "coalesced"
+      ],
+      "delivery": {
+        "status": "success",
+        "groupsSent": 1,
+        "previousIntensity": 2,
+        "intensity": 2,
+        "verified": true,
+        "handoff": "reset_observed",
+        "elapsedMillis": 4268,
+        "completionTimestampMillis": 1793631525874
+      },
+      "post_to_completion_millis": 5514,
+      "device_observation": {
+        "keyguard_showing": true,
+        "power_before": "Awake",
+        "power_after": "Dozing",
+        "continuous_screen_off_not_established": true
+      },
+      "evidence_origin": "bounded ADB command output in this chat"
+    },
+    {
+      "name": "single_0.4_service_stopped",
+      "app_version": "0.4-preview",
+      "posted_count": 1,
+      "first_post_millis": 1793634905309,
+      "outcome": "no relay notification or delivery record; alert service absent in post-test inspection",
+      "physical_report": "not requested because delivery did not start"
+    },
+    {
+      "name": "single_0.4_running",
+      "app_version": "0.4-preview",
+      "first_post_millis": 1793635307478,
+      "posted_count": 1,
+      "records": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793635307709
+        },
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              890
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793635319118,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "gattDisconnect": "returned",
+              "gattClose": "returned"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 10394,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 11415,
+          "timestampMillis": 1793635319123
+        }
+      ],
+      "physical_report": "user confirmed one group",
+      "google_health": "user confirmed alarm list loads while alerts remain running",
+      "post_to_completion_millis": [
+        11645
+      ]
+    },
+    {
+      "name": "burst_0.4_locked",
+      "app_version": "0.4-preview",
+      "first_post_millis": 1793635600257,
+      "posted_count": 3,
+      "records": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793635600476
+        },
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "coalesced",
+          "groups": 1,
+          "timestampMillis": 1793635600668
+        },
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "coalesced",
+          "groups": 1,
+          "timestampMillis": 1793635600876
+        },
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              873
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793635610043,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "gattDisconnect": "returned",
+              "gattClose": "returned"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 8562,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 9172,
+          "timestampMillis": 1793635610048
+        }
+      ],
+      "physical_report": "user confirmed one group while phone remained locked",
+      "google_health": "user confirmed alarm list loads after burst with alerts running",
+      "post_to_completion_millis": [
+        9791
+      ],
+      "power_observations": {
+        "before": "Dozing; keyguard showing",
+        "after": "Dozing",
+        "continuous_screen_off_not_established": true
+      }
+    },
+    {
+      "name": "single_0.4_after_bluetooth_cycle",
+      "app_version": "0.4-preview",
+      "first_post_millis": 1793636363235,
+      "posted_count": 1,
+      "precondition": "user reported stopping alerts, cycling Bluetooth, reconnecting Air and restarting alerts; foreground relay confirmed before test",
+      "records": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793636363464
+        },
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              345
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793636373831,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "gattDisconnect": "returned",
+              "gattClose": "returned"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 9361,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 10369,
+          "timestampMillis": 1793636373834
+        }
+      ],
+      "physical_report": "not confirmed; user requested resend",
+      "google_health": "user confirmed alarm list loads with alerts running",
+      "post_to_completion_millis": [
+        10599
+      ]
+    },
+    {
+      "name": "single_0.4_after_bluetooth_cycle_repeat",
+      "app_version": "0.4-preview",
+      "first_post_millis": 1793636936581,
+      "posted_count": 1,
+      "records": [
+        {
+          "event": "notification",
+          "source": "dev.codex.airtestsender",
+          "outcome": "queued",
+          "groups": 1,
+          "timestampMillis": 1793636936803
+        },
+        {
+          "status": "success",
+          "result": {
+            "groupsRequested": 1,
+            "groupsSent": 1,
+            "gapMillis": 1800,
+            "previousIntensity": 2,
+            "intensity": 2,
+            "verified": true,
+            "cancelled": false,
+            "postOffsetsMillis": [
+              883
+            ]
+          },
+          "cleanup": {
+            "operation": "Pattern",
+            "completedAtMillis": 1793636944515,
+            "steps": {
+              "channelHandoff": "reset_observed",
+              "stopScan": "not_present",
+              "channelHold": "none",
+              "subscriptions": "returned",
+              "secureCapture": "not_present",
+              "endpoint": "not_present",
+              "stack": "returned",
+              "rxSource": "returned",
+              "txSink": "returned",
+              "linkPriority": "returned",
+              "gattDisconnect": "returned",
+              "gattClose": "returned"
+            }
+          },
+          "command": "pattern",
+          "elapsedMillis": 6702,
+          "event": "delivery",
+          "source": "dev.codex.airtestsender",
+          "queueAgeMillis": 7717,
+          "timestampMillis": 1793636944520
+        }
+      ],
+      "physical_report": "user confirmed one felt group",
+      "google_health": "not rechecked after this repeat; user confirmed loading after the preceding post-cycle test",
+      "post_to_completion_millis": [
+        7939
+      ]
+    }
+  ],
+  "google_health": {
+    "after_single_initial": "user confirmed alarm list loads",
+    "after_calibration": "temporary failure followed by user-confirmed recovery",
+    "after_burst_repeat_locked": "user reported alarm list errors or keeps loading",
+    "after_user_stopped_alerts": "user reported alarm list loaded; relay was running again at USB reconnection, so a controlled stopped-state comparison was not established"
+  },
+  "limits": [
+    "Post-to-completion is not physical vibration onset latency",
+    "No long-term battery or reliability conclusion",
+    "Locked delivery confirmed; continuous screen-off interval not established",
+    "Bluetooth cycling with manual alert restart tested; automatic out-of-range recovery and reboot recovery not tested",
+    "Only synthetic local notifications used; user app choices not configured",
+    "0.4 passed short coexistence checks; cause of prior 0.3 stalls is not proven"
+  ],
+  "candidate_fix": {
+    "version": "0.4-preview",
+    "apk_sha256": "e079b597b66e15339fa293b645f42bd430f69a692e31134ed8e4e66f760a96b3",
+    "changes": [
+      "No persistent idle warm GATT link; release client after every delivery",
+      "Respect system bar/display cutout insets"
+    ],
+    "build_verified": true,
+    "installed": true,
+    "hardware_validation": "Single notification and locked-phone three-notification burst passed with user-confirmed one felt group and Google Health alarm list loading. A Bluetooth off/on cycle followed by user-restarted alerts also delivered; user confirmed one felt group on repeat and alarm list loading after the preceding post-cycle test. All completed 0.4 deliveries verified Low strength and recorded reset handoff plus GATT disconnect/close returning."
+  },
+  "current_app_version": "0.4-preview",
+  "current_apk_sha256": "e079b597b66e15339fa293b645f42bd430f69a692e31134ed8e4e66f760a96b3",
+  "completed_checks": [
+    "A/B/C distinguishable in calibration (user-confirmed)",
+    "Metadata queue checks",
+    "Single synthetic notification delivery",
+    "Three synthetic notifications coalesced into one locked-phone delivery",
+    "Strength restored to Low after every completed test",
+    "Google Health alarm list loads with 0.4 relay running after single, burst and post-cycle tests (user-confirmed)",
+    "Delivery after Bluetooth off/on and manual alert restart"
+  ]
+}

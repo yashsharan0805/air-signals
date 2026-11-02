@@ -1,0 +1,24 @@
+{
+  "upstream": "https://github.com/ThoreKoritzius/fitbit-air",
+  "commit": "5f76f5f8d48d1dab420feeebc6ac87f52be78ba4",
+  "local_changes": [
+    "native Android diagnostic host and no-op Flutter channel adapters",
+    "prefer unique active Air when multiple old bonds exist",
+    "read-only probe excludes live activity",
+    "bounded 1-3 group pattern operation with readback/restoration and no failed-group replay",
+    "selected-app notification relay with user-started foreground service and metadata-only filtering",
+    "bounded coalescing queue and expiring alerts",
+    "native Android app picker and pattern editor",
+    "record per-command handoff outcomes and pause relay unless reset handoff was observed",
+    "relay releases its GATT client after each command; no persistent idle warm link",
+    "respect system bar and display cutout insets in native Android UI"
+  ],
+  "permissions": [
+    "BLUETOOTH_CONNECT",
+    "FOREGROUND_SERVICE",
+    "FOREGROUND_SERVICE_CONNECTED_DEVICE",
+    "POST_NOTIFICATIONS",
+    "WAKE_LOCK"
+  ],
+  "automatic_operations": "Relay operates only after the user enables notification access and presses Start alerts; no boot auto-start."
+}

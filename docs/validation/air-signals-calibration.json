@@ -1,0 +1,103 @@
+{
+  "date": "2026-11-02",
+  "access_probe": {
+    "status": "success",
+    "result": {
+      "resources": [
+        {
+          "path": "/md/606",
+          "responseClass": 2,
+          "detail": 5,
+          "bodyLength": 79
+        },
+        {
+          "path": "/alarms",
+          "responseClass": 4,
+          "detail": 1,
+          "bodyLength": 0
+        },
+        {
+          "path": "/sync/status",
+          "responseClass": 4,
+          "detail": 1,
+          "bodyLength": 0
+        }
+      ]
+    },
+    "command": "probe",
+    "timestampMillis": 1793628910297,
+    "elapsedMillis": 9103
+  },
+  "patterns": {
+    "A": {
+      "status": "success",
+      "result": {
+        "groupsRequested": 1,
+        "groupsSent": 1,
+        "gapMillis": 1800,
+        "previousIntensity": 2,
+        "intensity": 2,
+        "verified": true,
+        "cancelled": false,
+        "postOffsetsMillis": [
+          602
+        ]
+      },
+      "command": "pattern",
+      "elapsedMillis": 11967
+    },
+    "B": {
+      "status": "success",
+      "result": {
+        "groupsRequested": 2,
+        "groupsSent": 2,
+        "gapMillis": 1800,
+        "previousIntensity": 2,
+        "intensity": 2,
+        "verified": true,
+        "cancelled": false,
+        "postOffsetsMillis": [
+          910,
+          4032
+        ]
+      },
+      "command": "pattern",
+      "elapsedMillis": 7382
+    },
+    "C": {
+      "status": "success",
+      "result": {
+        "groupsRequested": 3,
+        "groupsSent": 3,
+        "gapMillis": 1800,
+        "previousIntensity": 2,
+        "intensity": 2,
+        "verified": true,
+        "cancelled": false,
+        "postOffsetsMillis": [
+          904,
+          4034,
+          5965
+        ]
+      },
+      "command": "pattern",
+      "elapsedMillis": 9464
+    }
+  },
+  "physical_confirmation": {
+    "all_three_distinguishable": true,
+    "reported_by": "user"
+  },
+  "coexistence": {
+    "alarm_list_temporarily_failed_after_calibration": true,
+    "user_subsequently_confirmed_alarm_list_recovered": true,
+    "cause_not_established": true
+  },
+  "calibrated_apk_sha256": "a6ea2bf88ebd3abcdfb3d48f15b0847ecadc7d66278f5da9d128bd6e626462bc",
+  "limitations": [
+    "No raw motor waveform control",
+    "Configured gap is approximate and includes Bluetooth/protocol delays",
+    "Temporary Google Health alarm-loading stall observed; recovery reported by user",
+    "Native notification resource has not been tested"
+  ]
+}

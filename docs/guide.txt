@@ -1,0 +1,71 @@
+AIR SIGNALS — Android preview 0.4
+
+Version 0.4 is installed on the Samsung Galaxy S25+. A synthetic single
+notification and a three-notification locked-phone burst both passed. The user
+confirmed one group and a loading Google Health alarm list after each.
+A Bluetooth off/on cycle followed by manually restarting alerts also passed:
+the user felt one group on the repeat test and reported Google Health alarms
+loading after the preceding post-cycle notification.
+Package: dev.codex.fitbitairlab.
+This is an experimental local build for Fitbit Air firmware 67.20001.253.2.
+
+USE
+1. Open Air Signals. Bluetooth permission and Android notification access must be allowed.
+2. Tap Choose apps. Tap an app and assign A, B or C; choose Off to disable it. Save.
+3. Tap Start alerts. Keep the persistent Air Signals notification enabled.
+4. Tap Stop alerts / preview to stop routing. Stop before previewing patterns.
+5. Edit A/B/C changes group count (1–3) and configured gap (1.2–3 seconds).
+6. After a reboot or a paused/failed delivery, open the app and press Start alerts again.
+
+Initially only Air Signals Test Sender is selected. Choose your own apps explicitly.
+Turn the test sender Off when you no longer want test notifications routed.
+Select up to five apps. Defaults: A = one group, B = two groups, C = three groups.
+Each group may contain several buzzes. This build cannot set a raw motor waveform,
+individual pulse duration or exact physical onset time. Bluetooth work adds delay.
+Settings are saved locally. Changing a rule does not change a delivery already queued.
+
+DELIVERY
+Selected apps only. Ongoing notifications and group summaries are ignored.
+Notifications from the same app waiting together are combined. A one-second debounce
+allows short bursts to merge. There is a five-second cooldown after completion.
+Up to five apps can wait, one pending alert per app; pending alerts expire after
+45 seconds. A new notification arriving while its earlier alert is already sending
+can produce a later alert. This is not an exact-once delivery guarantee.
+
+The transport temporarily changes vibration strength to trigger feedback, then checks
+the original strength. A failed group is never automatically replayed. An error or
+unverified connection handoff pauses routing. Stop cancels upcoming groups; a write
+already in progress is allowed to finish its restoration check.
+
+PRIVACY
+Android grants notification access system-wide. This implementation selects by app
+identity first, then uses notification ID, timestamp and flags. It does not read
+message bodies, titles, senders, contacts or actions. Private local diagnostic logs
+contain selected app package names, timing and transport results. No INTERNET,
+location, contacts or health-data permission is declared. This is a debuggable build.
+
+KNOWN LIMITS
+Google Health's alarm list temporarily failed to load after calibration and later
+recovered. It also loaded after the first notification test, but stalled again after the
+locked-phone burst. Version 0.4 disables the persistent idle Bluetooth client;
+two short device tests passed with Google Health alarms loading afterward.
+This supports the change but does not establish the cause of prior stalls. Shared-channel handoff
+was observed in app diagnostics; this does not prove uninterrupted Google Health
+sync. Battery drain, long-term reliability, out-of-range recovery, reboot behavior,
+all third-party app notification types and all firmware versions remain unverified.
+User confirmation is needed for felt vibrations; transport success alone is not proof.
+
+PROVENANCE AND FILES
+Transport source: https://github.com/ThoreKoritzius/fitbit-air
+Commit: 5f76f5f8d48d1dab420feeebc6ac87f52be78ba4
+Native libgg.so/libxp.so and license notices are included. No Google Health APK or
+proprietary credentials are included. The source ZIP includes modified Kotlin
+sources, manifest, dependency hashes and the local build helper. The helper requires
+the documented local SDK/JDK and dependency cache paths; it is not a standalone
+Gradle project. Do not run prepare_lab.py over the modified Air Signals sources.
+
+APK: air-signals-0.4.apk (SHA-256 in air-signals-0.4.sha256)
+Sources: air-signals-0.4-source.zip
+Local synthetic notification sender: air-signals-test-sender.apk
+Calibration evidence: air-signals-calibration.json
+Notification integration evidence: air-signals-notification-tests.json
