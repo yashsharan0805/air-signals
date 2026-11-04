@@ -11,7 +11,9 @@
     "native Android app picker and pattern editor",
     "record per-command handoff outcomes and pause relay unless reset handoff was observed",
     "relay releases its GATT client after each command; no persistent idle warm link",
-    "respect system bar and display cutout insets in native Android UI"
+    "respect system bar and display cutout insets in native Android UI",
+    "Material 3 Compose UI, dynamic light/dark theme, adaptive navigation, accessible groups and searchable app assignments",
+    "Gradle wrapper and pinned Compose build; UI/local-preference instrumentation tests"
   ],
   "permissions": [
     "BLUETOOTH_CONNECT",

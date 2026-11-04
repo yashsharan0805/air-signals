@@ -1,0 +1,55 @@
+{
+  "version": "0.5-preview",
+  "apk_sha256": "edaa172cc867bed715128fd4dc7e094d0d6a850e6bf4bc3b279f97b0cd86a67b",
+  "baseline_commit": "ba7703a",
+  "build": "passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 28,
+    "warning_categories": {
+      "CheckResult": 3,
+      "AndroidGradlePluginVersion": 1,
+      "GradleDependency": 7,
+      "UseRequiresApi": 2,
+      "LogNotTimber": 11,
+      "ObsoleteSdkInt": 1,
+      "UseKtx": 3
+    }
+  },
+  "ui_tests": {
+    "passed": 6,
+    "failed": 0,
+    "target": "ARM64 Android 16/API 36 emulator",
+    "checks": [
+      "start disabled when setup incomplete",
+      "search empty state and saved-rule isolation",
+      "app assignments persist only after Save, including activity recreation",
+      "pattern Cancel preserves prior settings",
+      "pattern Save persists across activity recreation",
+      "screen capture fixture without BLE commands"
+    ]
+  },
+  "visual_review": {
+    "light_portrait": "reviewed",
+    "dark_150_percent_text": "reviewed; text and gap choices wrap; editor Save/Cancel visible",
+    "wide_window": "reviewed; navigation rail and centered content",
+    "screenshots": "outputs/ui-preview"
+  },
+  "physical_device_install": {
+    "status": "pending USB reconnection",
+    "package": "dev.codex.fitbitairlab",
+    "version_code": 5
+  },
+  "scope": [
+    "No new physical motor test performed for 0.5 UI changes",
+    "0.4 physical haptic and Google Health checks are recorded separately",
+    "No complete TalkBack audit or all-device accessibility certification",
+    "Lint warnings remain for upstream logging/subscriptions, style suggestions and newer dependency versions"
+  ],
+  "compatibility_fixes": [
+    "Use BluetoothStatusCodes.SUCCESS for API 33+ write calls (same numeric success value)",
+    "Mark API 33 callback delegation and handle permission revocation in connection-priority callback",
+    "Let Gradle set debuggable/SDK/native packaging; add explicit backup exclusions",
+    "Update Timber to 5.0.1 so its lint checker works with the Gradle build"
+  ]
+}

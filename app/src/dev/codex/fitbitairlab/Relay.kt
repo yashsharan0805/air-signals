@@ -109,7 +109,7 @@ class RelayService : Service() {
     private fun notification(text: String): Notification {
         val open = PendingIntent.getActivity(this, 1, Intent(this, LabActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         val stop = PendingIntent.getService(this, 2, Intent(this, RelayService::class.java).setAction(STOP), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        return Notification.Builder(this, CHANNEL).setSmallIcon(android.R.drawable.ic_lock_idle_alarm).setContentTitle("Air Signals").setContentText(text).setContentIntent(open).setOngoing(true).setOnlyAlertOnce(true).addAction(Notification.Action.Builder(null, "Stop alerts", stop).build()).build()
+        return Notification.Builder(this, CHANNEL).setSmallIcon(R.drawable.ic_signal).setContentTitle("Air Signals").setContentText(text).setContentIntent(open).setOngoing(true).setOnlyAlertOnce(true).addAction(Notification.Action.Builder(null, "Stop alerts", stop).build()).build()
     }
     override fun onDestroy() {
         accepting = false; queue.clear(); handler.removeCallbacksAndMessages(null)

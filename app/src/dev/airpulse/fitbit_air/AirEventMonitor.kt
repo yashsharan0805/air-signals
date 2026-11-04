@@ -119,7 +119,7 @@ internal class AirEventMonitor(
         }
         val (descriptor, value) = next
         val accepted = if (Build.VERSION.SDK_INT >= 33) {
-            g.writeDescriptor(descriptor, value) == BluetoothGatt.GATT_SUCCESS
+            g.writeDescriptor(descriptor, value) == android.bluetooth.BluetoothStatusCodes.SUCCESS
         } else {
             @Suppress("DEPRECATION")
             descriptor.value = value

@@ -144,6 +144,7 @@ internal class AirWarmLink(private val context: Context) {
             }
         }
 
+        @android.annotation.TargetApi(33)
         override fun onCharacteristicChanged(g: BluetoothGatt, c: BluetoothGattCharacteristic, value: ByteArray) {
             if (c.uuid == TRACKER_RX) record(value.size)
             delegate?.onCharacteristicChanged(g, c, value)
@@ -169,6 +170,7 @@ internal class AirWarmLink(private val context: Context) {
             delegate?.onCharacteristicWrite(g, c, status)
         }
 
+        @android.annotation.TargetApi(33)
         override fun onCharacteristicRead(g: BluetoothGatt, c: BluetoothGattCharacteristic, value: ByteArray, status: Int) {
             delegate?.onCharacteristicRead(g, c, value, status)
         }

@@ -603,7 +603,7 @@ class FitbitAirPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHa
                     return@dispatch
                 }
                 val accepted = if (Build.VERSION.SDK_INT >= 33) {
-                    g.writeDescriptor(cccd, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) == BluetoothGatt.GATT_SUCCESS
+                    g.writeDescriptor(cccd, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) == android.bluetooth.BluetoothStatusCodes.SUCCESS
                 } else {
                     @Suppress("DEPRECATION")
                     cccd.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
@@ -828,7 +828,7 @@ class FitbitAirPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHa
             return
         }
         val accepted = if (Build.VERSION.SDK_INT >= 33) {
-            g.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) == BluetoothGatt.GATT_SUCCESS
+            g.writeDescriptor(descriptor, BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE) == android.bluetooth.BluetoothStatusCodes.SUCCESS
         } else {
             @Suppress("DEPRECATION")
             descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
@@ -1041,7 +1041,12 @@ class FitbitAirPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHa
                         // exists: on a fast link Google Health tends to answer the Air's
                         // handshake first and both stall. closeTransport() restores low power.
                         if (!linkBoosted) {
-                            linkBoosted = gatt?.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH) == true
+                            try {
+                                linkBoosted = gatt?.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH) == true
+                            } catch (_: SecurityException) {
+                                finishError("BLUETOOTH_PERMISSION", "Bluetooth permission was revoked.")
+                                return@dispatch
+                            }
                         }
                         runOperation(coap)
                     }
@@ -1395,7 +1400,7 @@ class FitbitAirPlugin : FlutterPlugin, ActivityAware, MethodChannel.MethodCallHa
         val packet = synchronized(txQueue) { if (txQueue.isEmpty()) null else txQueue.removeFirst() } ?: return
         writeInFlight = true
         val accepted = if (Build.VERSION.SDK_INT >= 33) {
-            activeGatt.writeCharacteristic(characteristic, packet, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE) == BluetoothGatt.GATT_SUCCESS
+            activeGatt.writeCharacteristic(characteristic, packet, BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE) == android.bluetooth.BluetoothStatusCodes.SUCCESS
         } else {
             @Suppress("DEPRECATION") characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
             @Suppress("DEPRECATION") characteristic.value = packet

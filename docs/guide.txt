@@ -1,20 +1,22 @@
-AIR SIGNALS — Android preview 0.4
+AIR SIGNALS — Android preview 0.5 (Material 3 UI)
 
-Version 0.4 is installed on the Samsung Galaxy S25+. A synthetic single
-notification and a three-notification locked-phone burst both passed. The user
-confirmed one group and a loading Google Health alarm list after each.
-A Bluetooth off/on cycle followed by manually restarting alerts also passed:
-the user felt one group on the repeat test and reported Google Health alarms
-loading after the preceding post-cycle notification.
+Version 0.5 adds Material 3 Home, Apps and Patterns screens, light/dark dynamic
+colors, adaptive navigation, searchable app assignments and scalable controls.
+The 0.4 transport was physically validated for single notifications, locked-phone
+bursts, strength restoration and delivery after Bluetooth cycling/manual restart.
+Google Health alarms loaded after those 0.4 tests. UI tests do not establish
+new physical motor behavior or long-term coexistence.
 Package: dev.codex.fitbitairlab.
 This is an experimental local build for Fitbit Air firmware 67.20001.253.2.
 
 USE
 1. Open Air Signals. Bluetooth permission and Android notification access must be allowed.
-2. Tap Choose apps. Tap an app and assign A, B or C; choose Off to disable it. Save.
-3. Tap Start alerts. Keep the persistent Air Signals notification enabled.
-4. Tap Stop alerts / preview to stop routing. Stop before previewing patterns.
-5. Edit A/B/C changes group count (1–3) and configured gap (1.2–3 seconds).
+2. Open Apps, search for an app, assign A, B or C (or Off), then tap Save at the top.
+3. Open Home and tap Start alerts. Keep the persistent status notification enabled.
+4. Tap Stop alerts on Home to stop routing. Stop before previewing patterns.
+5. On Patterns, Edit changes group count (1–3) and configured gap (1.2–3 seconds).
+   Save commits your changes; Cancel leaves the original pattern. Preview sends
+   a signal only after you confirm it.
 6. After a reboot or a paused/failed delivery, open the app and press Start alerts again.
 
 Initially only Air Signals Test Sender is selected. Choose your own apps explicitly.
@@ -60,12 +62,13 @@ Transport source: https://github.com/ThoreKoritzius/fitbit-air
 Commit: 5f76f5f8d48d1dab420feeebc6ac87f52be78ba4
 Native libgg.so/libxp.so and license notices are included. No Google Health APK or
 proprietary credentials are included. The source ZIP includes modified Kotlin
-sources, manifest, dependency hashes and the local build helper. The helper requires
-the documented local SDK/JDK and dependency cache paths; it is not a standalone
-Gradle project. Do not run prepare_lab.py over the modified Air Signals sources.
+sources, Android resources, a Gradle wrapper and pinned dependencies. Use Java 21,
+Android SDK 36 and ./gradlew :app:assembleDebug. To upgrade an existing local
+installation, supply its original signing identity using AIR_SIGNALS_KEYSTORE.
+No key is included in source control or the source archive.
 
-APK: air-signals-0.4.apk (SHA-256 in air-signals-0.4.sha256)
-Sources: air-signals-0.4-source.zip
+APK: air-signals-0.5.apk (SHA-256 in air-signals-0.5.sha256)
+Sources: air-signals-0.5-source.zip
 Local synthetic notification sender: air-signals-test-sender.apk
 Calibration evidence: air-signals-calibration.json
 Notification integration evidence: air-signals-notification-tests.json

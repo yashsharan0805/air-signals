@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="dev.codex.fitbitairlab" android:versionCode="4" android:versionName="0.4-preview">
-<uses-sdk android:minSdkVersion="32" android:targetSdkVersion="36"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
@@ -7,10 +6,10 @@
 <uses-permission android:name="android.permission.WAKE_LOCK"/>
 <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 <queries><intent><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent></queries>
-<application android:label="Air Signals" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:debuggable="true" android:allowBackup="false" android:extractNativeLibs="true" android:usesCleartextTraffic="false">
-<activity android:name="dev.codex.fitbitairlab.LabActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
+<application android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher" android:label="@string/app_name" android:theme="@style/Theme.AirSignals" android:allowBackup="false" android:dataExtractionRules="@xml/data_extraction_rules" android:usesCleartextTraffic="false">
+<activity android:name="dev.codex.fitbitairlab.LabActivity" android:windowSoftInputMode="adjustResize" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
 <service android:name="dev.codex.fitbitairlab.RelayService" android:exported="false" android:foregroundServiceType="connectedDevice"/>
-<service android:name="dev.codex.fitbitairlab.AirNotificationListener" android:label="Air Signals" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" android:exported="true"><intent-filter><action android:name="android.service.notification.NotificationListenerService"/></intent-filter></service>
+<service android:name="dev.codex.fitbitairlab.AirNotificationListener" android:label="@string/app_name" android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" android:exported="true"><intent-filter><action android:name="android.service.notification.NotificationListenerService"/></intent-filter></service>
 </application>
 <instrumentation android:name="dev.codex.fitbitairlab.LabInstrumentation" android:targetPackage="dev.codex.fitbitairlab" android:label="Explicit Air calibration"/>
 </manifest>
