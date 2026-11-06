@@ -1,6 +1,7 @@
 AIR SIGNALS — Android preview 0.5 (Material 3 UI)
 
-Version 0.5 adds Material 3 Home, Apps and Patterns screens, light/dark dynamic
+Version 0.5 is installed on the S25+; its APK hash was verified on the device.
+It adds Material 3 Home, Apps and Patterns screens, light/dark dynamic
 colors, adaptive navigation, searchable app assignments and scalable controls.
 The 0.4 transport was physically validated for single notifications, locked-phone
 bursts, strength restoration and delivery after Bluetooth cycling/manual restart.

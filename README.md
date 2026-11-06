@@ -37,6 +37,6 @@ UI tests only exercise local UI/preferences, including search empty states, disa
 
 ### UI validation results
 
-Debug build and Android lint passed (zero errors, 28 warnings, primarily inherited logging/subscription/style findings and available dependency updates). Six emulator UI checks passed. Screens were visually reviewed in portrait light mode, dark mode at 150% font scale, and a wide window with navigation rail. The checked-in report is `docs/validation/ui-0.5.json`. This is UI/local-preference validation; physical motor results belong to the earlier 0.4 trials. Installing on the S25+ is pending USB reconnection.
+Debug build and Android lint passed (zero errors, 28 warnings, primarily inherited logging/subscription/style findings and available dependency updates). Six emulator UI checks passed. Screens were visually reviewed in portrait light mode, dark mode at 150% font scale, and a wide window with navigation rail. The checked-in report is `docs/validation/ui-0.5.json`. This is UI/local-preference validation; physical motor results belong to the earlier 0.4 trials. Version 0.5 was installed and opened on the S25+ on 2026-11-06; the installed APK hash matches the validated build. The Home screen was visually checked in dark mode, and existing permissions and the saved test-sender assignment were preserved.
 
 <img src="docs/images/home.png" alt="Air Signals Material 3 home screen in the emulator" width="280" /> <img src="docs/images/patterns.png" alt="Air Signals patterns screen in the emulator" width="280" />

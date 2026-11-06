@@ -36,9 +36,21 @@
     "screenshots": "outputs/ui-preview"
   },
   "physical_device_install": {
-    "status": "pending USB reconnection",
+    "status": "installed and opened successfully",
+    "verified_on": "2026-11-06",
+    "model": "SM-S9360 (Galaxy S25+)",
     "package": "dev.codex.fitbitairlab",
-    "version_code": 5
+    "version_code": 5,
+    "version_name": "0.5-preview",
+    "installed_apk_sha256_matches_validated_build": true,
+    "permissions_preserved": [
+      "BLUETOOTH_CONNECT",
+      "POST_NOTIFICATIONS"
+    ],
+    "observed_ui": "Home screen visible in dark mode; existing test-sender A assignment preserved",
+    "launch_evidence": "ev_29bfcba9f0387b40586c42ed5d917ee2dec02bd426ed9b639d318c583258e5b4",
+    "screen_evidence": "ev_bac9b6d39a849a93bc1cdf173e56743dca531ccc27625a3fc8a927387a9f57a3",
+    "screenshot": "outputs/ui-device-0.5/screen.png"
   },
   "scope": [
     "No new physical motor test performed for 0.5 UI changes",
