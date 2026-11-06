@@ -31,9 +31,23 @@ A **group** can contain several buzzes. This app does not provide raw waveform c
 
 Only ARM64 native libraries are included. Other tracker models, firmware versions, and phone configurations have not been verified.
 
-## Build and install
+## Download and install
 
-There is currently no published binary release. Build the debug APK from source:
+Get the **[0.5 preview APK (ARM64)](https://github.com/yashsharan0805/air-signals/releases/download/v0.5-preview/air-signals-0.5.apk)** from [GitHub Releases](https://github.com/yashsharan0805/air-signals/releases/tag/v0.5-preview). The release also includes a [SHA-256 checksum](https://github.com/yashsharan0805/air-signals/releases/download/v0.5-preview/air-signals-0.5.sha256).
+
+Download the APK on your Android phone and open it to install. Android may ask you to allow installations from the browser or file manager you use. This is a **signed debug preview** for ARM64 phones running Android 12L / API 32 or newer.
+
+For an authorized USB-connected device:
+
+```sh
+adb install -r air-signals-0.5.apk
+```
+
+Then follow [Set up your signals](#set-up-your-signals). Updating an existing installation requires the same signing identity.
+
+## Build from source
+
+To build the debug APK yourself:
 
 1. Install **JDK 21**, **Android SDK Platform 36**, **Build Tools 36.0.0**, and **Android Platform Tools**. Android Studio can install the SDK packages.
 2. Configure `JAVA_HOME` and `ANDROID_HOME` for your local JDK and Android SDK.
