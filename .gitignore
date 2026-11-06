@@ -10,3 +10,13 @@ local.properties
 *.idsig
 .DS_Store
 __pycache__/
+
+# Local credentials, device captures and private history backups
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.bundle
