@@ -1,6 +1,9 @@
-AIR SIGNALS — Android preview 0.5 (Material 3 UI)
+AIR SIGNALS — Android preview 0.6 (screen-on mute setting)
 
-Version 0.5 is installed on the S25+; its APK hash was verified on the device.
+Version 0.6 adds a saved Settings toggle for muting notifications while the phone
+is awake. The 0.6 build is checked on an Android 16 / API 36 emulator; its new
+feature has not yet been tested on a physical Fitbit. Version 0.5 was installed
+on the S25+ and its APK hash was verified on the device.
 It adds Material 3 Home, Apps and Patterns screens, light/dark dynamic
 colors, adaptive navigation, searchable app assignments and scalable controls.
 The 0.4 transport was physically validated for single notifications, locked-phone
@@ -19,6 +22,13 @@ USE
    Save commits your changes; Cancel leaves the original pattern. Preview sends
    a signal only after you confirm it.
 6. After a reboot or a paused/failed delivery, open the app and press Start alerts again.
+7. Open Settings and enable "Mute while phone screen is on" to skip notification vibrations while the phone is awake.
+   The switch saves immediately and is off by default. The awake lock screen
+   counts as on; a dozing Always On
+   Display does not. Skipped/pending alerts are discarded, not delayed until sleep.
+   Waking the phone cancels remaining notification groups; an already-sent write
+   may finish verification. New notifications can vibrate after the phone sleeps.
+   Alerts stay running and manual pattern previews still work.
 
 Fresh installs have no apps selected. Choose your own apps explicitly.
 The recorded hardware trials used a local synthetic test sender.
@@ -73,4 +83,5 @@ Build output: app/build/outputs/apk/debug/app-debug.apk
 Source and build instructions: ../README.md
 Calibration evidence: validation/air-signals-calibration.json
 Notification integration evidence: validation/air-signals-notification-tests.json
-UI and phone installation evidence: validation/ui-0.5.json
+0.5 UI and phone installation evidence: validation/ui-0.5.json
+0.6 build and emulator evidence: validation/screen-on-mute.json

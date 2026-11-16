@@ -34,14 +34,30 @@ class RelayService : Service() {
         fun accessGranted(ctx: Context): Boolean = ctx.getSystemService(NotificationManager::class.java).isNotificationListenerAccessGranted(ComponentName(ctx, AirNotificationListener::class.java))
     }
     private val handler = Handler(Looper.getMainLooper())
-    private val queue = AlertQueue()
+    private val queue = AlertQueue(suppressAlerts = { Rules.alertsMuted(this) })
     private var accepting = false
     private var busy = false
     private var lastCompleted = Long.MIN_VALUE / 2
     private var lock: PowerManager.WakeLock? = null
     private val drainTask = Runnable { drain() }
+    private val screenReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Intent.ACTION_SCREEN_ON && Rules.muteWhileScreenOn(this@RelayService)) mutePendingAlerts()
+            else updateScreenPolicy()
+        }
+    }
+    private val preferenceListener = android.content.SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key == null || key == Rules.MUTE_WHILE_SCREEN_ON) handler.post { updateScreenPolicy() }
+    }
     override fun onBind(intent: Intent?) = null
-    override fun onCreate() { super.onCreate(); instance = this }
+    override fun onCreate() {
+        super.onCreate()
+        val filter = IntentFilter().apply { addAction(Intent.ACTION_SCREEN_ON); addAction(Intent.ACTION_SCREEN_OFF) }
+        if (Build.VERSION.SDK_INT >= 33) registerReceiver(screenReceiver, filter, RECEIVER_NOT_EXPORTED)
+        else registerReceiver(screenReceiver, filter)
+        Rules.prefs(this).registerOnSharedPreferenceChangeListener(preferenceListener)
+        instance = this
+    }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == STOP) { requestStop("Alerts stopped"); return START_NOT_STICKY }
         val manager = getSystemService(NotificationManager::class.java)
@@ -52,19 +68,36 @@ class RelayService : Service() {
             return START_NOT_STICKY
         }
         accepting = true
-        state("Listening for selected apps")
+        updateScreenPolicy()
         // Each delivery owns a short-lived GATT client. Do not retain an idle
         // subscription to the channel Google Health also uses.
         AirEngine.call(this, "keepLinkWarm", mapOf("enabled" to false)) { }
         return START_NOT_STICKY
     }
     fun enqueue(item: PendingAlert) {
+        // Capture receipt-time state too: a handler delay must not turn a skipped
+        // screen-on notification into a later screen-off vibration.
+        val mutedAtReceipt = Rules.alertsMuted(this)
         handler.post {
             if (!accepting) return@post
-            val outcome = queue.offer(item, SystemClock.elapsedRealtime())
+            val outcome = if (mutedAtReceipt) "screen_on" else queue.offer(item, SystemClock.elapsedRealtime())
             LabBridge.record(this, mapOf("event" to "notification", "source" to item.source, "outcome" to outcome, "groups" to item.groups))
             if (outcome in setOf("queued", "coalesced")) schedule()
         }
+    }
+    private fun mutePendingAlerts() {
+        if (!accepting) return
+        queue.clear()
+        handler.removeCallbacks(drainTask)
+        // Pattern cancellation lets an in-flight write finish its verification,
+        // then skips remaining groups and performs normal connection cleanup.
+        if (busy) AirEngine.call(this, "cancelOperation") { }
+        state(getString(R.string.screen_on_muted_status))
+    }
+    private fun updateScreenPolicy() {
+        if (!accepting) return
+        if (Rules.alertsMuted(this)) mutePendingAlerts()
+        else if (!busy) { state("Listening for selected apps"); schedule() }
     }
     private fun schedule() {
         // One bounded debounce window merges bursts without postponing forever.
@@ -87,7 +120,7 @@ class RelayService : Service() {
                 val steps = cleanup?.get("steps") as? Map<*, *>
                 if (steps?.get("channelHandoff") != "reset_observed") {
                     requestStop("Air connection handoff was not verified. Alerts paused; check Google Health before restarting.")
-                } else if (!accepting) finishStop() else { state("Listening for selected apps"); schedule() }
+                } else if (!accepting) finishStop() else updateScreenPolicy()
             }
         }
     }
@@ -112,6 +145,8 @@ class RelayService : Service() {
         return Notification.Builder(this, CHANNEL).setSmallIcon(R.drawable.ic_signal).setContentTitle("Air Signals").setContentText(text).setContentIntent(open).setOngoing(true).setOnlyAlertOnce(true).addAction(Notification.Action.Builder(null, "Stop alerts", stop).build()).build()
     }
     override fun onDestroy() {
+        unregisterReceiver(screenReceiver)
+        Rules.prefs(this).unregisterOnSharedPreferenceChangeListener(preferenceListener)
         accepting = false; queue.clear(); handler.removeCallbacksAndMessages(null)
         if (lock?.isHeld == true) lock?.release()
         lock = null

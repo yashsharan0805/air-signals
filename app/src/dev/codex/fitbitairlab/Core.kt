@@ -65,7 +65,10 @@ object AirEngine {
 }
 
 object Rules {
+    const val MUTE_WHILE_SCREEN_ON = "mute_while_screen_on"
     fun prefs(ctx: Context) = ctx.getSharedPreferences("signals", Context.MODE_PRIVATE)
+    fun muteWhileScreenOn(ctx: Context) = prefs(ctx).getBoolean(MUTE_WHILE_SCREEN_ON, false)
+    fun alertsMuted(ctx: Context) = muteWhileScreenOn(ctx) && ctx.getSystemService(android.os.PowerManager::class.java).isInteractive
     fun all(ctx: Context): Map<String, Int> {
         val data = JSONObject(prefs(ctx).getString("rules", "{}") ?: "{}")
         return data.keys().asSequence().associateWith { data.optInt(it, 1).coerceIn(1, 3) }

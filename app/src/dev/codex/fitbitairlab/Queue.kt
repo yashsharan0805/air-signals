@@ -3,10 +3,11 @@ package dev.codex.fitbitairlab
 data class PendingAlert(val source: String, val groups: Int, val gapMillis: Int, val received: Long, val identity: String)
 
 /** The queue never needs notification text, senders, titles or contact identifiers. */
-class AlertQueue(private val capacity: Int = 5, private val ttlMillis: Long = 45000) {
+class AlertQueue(private val capacity: Int = 5, private val ttlMillis: Long = 45000, private val suppressAlerts: () -> Boolean = { false }) {
     private val pending = LinkedHashMap<String, PendingAlert>()
     private val seen = LinkedHashMap<String, Long>()
     @Synchronized fun offer(item: PendingAlert, now: Long): String {
+        if (discardIfSuppressed()) return "screen_on"
         seen.entries.removeAll { now - it.value > 60000 }
         if (seen.containsKey(item.identity)) return "duplicate"
         if (now - item.received >= ttlMillis) return "expired"
@@ -18,11 +19,17 @@ class AlertQueue(private val capacity: Int = 5, private val ttlMillis: Long = 45
         return if (merged) "coalesced" else "queued"
     }
     @Synchronized fun take(now: Long): PendingAlert? {
+        if (discardIfSuppressed()) return null
         pending.entries.removeAll { now - it.value.received >= ttlMillis }
         val key = pending.keys.firstOrNull() ?: return null
         return pending.remove(key)
     }
     @Synchronized fun clear() { pending.clear() }
+    @Synchronized fun discardIfSuppressed(): Boolean {
+        if (!suppressAlerts()) return false
+        pending.clear()
+        return true
+    }
     @Synchronized fun size() = pending.size
 }
 

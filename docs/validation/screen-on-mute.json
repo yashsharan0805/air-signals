@@ -1,0 +1,64 @@
+{
+  "feature": "Mute while phone screen is on",
+  "verified_on": "2026-11-16",
+  "source_base_commit": "3c50ec05a744735c14c2ca43e58f4aeadbac9991",
+  "source_status": "Release build for v0.6-preview",
+  "apk_version": "0.6-preview",
+  "apk_sha256": "4327ca3f7b413a546b3520643a6858cc262cc8ca13007fca7fc44744e61197ad",
+  "signing_certificate_sha256": "3a4487f83d6ba52d5382730970345c14c6bec293c533f6246a2695634e379f28",
+  "signing_matches_published_0_5": true,
+  "build": "passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 29
+  },
+  "instrumentation_tests": {
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "target": "ARM64 Android 16 / API 36 emulator",
+    "checks": [
+      "queueCapacityCoalescingExpiryAndDuplicatesStillWork",
+      "wakingBeforeDeliveryDiscardsThePendingQueue",
+      "androidScreenStateOnlyMutesWhenThePreferenceIsEnabled",
+      "enablingMuteWhileAwakeDropsPendingAlertsButDisablingAllowsNewOnes",
+      "absentPreferenceKeepsExistingNotificationBehavior",
+      "screenOnNotificationsAreDiscardedAndNeverReplayed",
+      "cancellingPatternEditLeavesSavedPatternUnchanged",
+      "patternChangesPersistAcrossActivityRecreation",
+      "appAssignmentsOnlyPersistAfterSave",
+      "appSearchHasEmptyStateAndDoesNotChangeSavedRules",
+      "missingPermissionsPreventStartingAlerts",
+      "screenOnMuteAppliesImmediatelyAndPersistsAcrossRecreation",
+      "captureScreens"
+    ]
+  },
+  "visual_review": {
+    "light_portrait": "reviewed; toggle off",
+    "dark_150_percent_text": "reviewed; toggle on, no clipped text",
+    "source_screenshot": "docs/images/settings.png"
+  },
+  "behavior": {
+    "default_enabled": false,
+    "applies_immediately": true,
+    "saved_across_recreation": true,
+    "screen_state_api": "PowerManager.isInteractive",
+    "skipped_alerts_replayed": false,
+    "manual_previews_suppressed": false,
+    "wake_cancels_remaining_groups": true
+  },
+  "limits": [
+    "No phone was connected; installation and physical Fitbit vibration checks were not performed for this change.",
+    "An already-sent haptic write may complete and verify its restoration after the screen wakes.",
+    "Active pattern cancellation uses the existing transport cancellation path; it was reviewed in source but not exercised on a physical Fitbit."
+  ],
+  "source_ref": "v0.6-preview",
+  "release_url": "https://github.com/yashsharan0805/air-signals/releases/tag/v0.6-preview",
+  "apk_version_code": 6,
+  "release_validation": {
+    "verified_on": "2026-11-16",
+    "method": "Gradle connectedDebugAndroidTest against the 0.6-preview APK",
+    "full_suite_passed": true,
+    "capture_fixture_fix": "An initial run passed all 12 functional checks but hit a PixelCopy timeout in the screenshot fixture. Captures now use UiAutomation for the whole Android window; a fresh full run passed all 13 checks."
+  }
+}

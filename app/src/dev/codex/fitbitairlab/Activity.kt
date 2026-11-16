@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -83,7 +84,7 @@ internal fun SignalsTheme(content: @Composable () -> Unit) {
 }
 
 private data class Destination(val key: String, val label: Int, val icon: ImageVector)
-private val destinations = listOf(Destination("home", R.string.home, Icons.Default.Home), Destination("apps", R.string.apps, Icons.Default.Menu), Destination("patterns", R.string.patterns, Icons.Default.Notifications))
+private val destinations = listOf(Destination("home", R.string.home, Icons.Default.Home), Destination("apps", R.string.apps, Icons.Default.Menu), Destination("patterns", R.string.patterns, Icons.Default.Notifications), Destination("settings", R.string.settings, Icons.Default.Settings))
 
 @Composable
 private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowStatus: () -> Unit, openBluetooth: () -> Unit, openAccess: () -> Unit) {
@@ -134,6 +135,7 @@ private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowSta
                         "home" -> HomeScreen(model, Modifier.widthIn(max = 720.dp), onApps = { page = "apps" },
                             allowBluetooth, allowStatus, openBluetooth, { accessDialog = true })
                         "patterns" -> PatternsScreen(model, Modifier.widthIn(max = 720.dp), { preview = it }, { edit = it })
+                        "settings" -> SettingsScreen(model, Modifier.widthIn(max = 720.dp))
                         "apps" -> AppsScreen(model, draft, query, Modifier.widthIn(max = 840.dp),
                             onQuery = { query = it }, onApp = { focus.clearFocus(); assignment = it }, onDiscard = { draft = state.rules.toMap() })
                     }
@@ -180,6 +182,28 @@ private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowSta
 
 @Composable private fun groupsText(count: Int) = pluralStringResource(R.plurals.group_count, count, count)
 @Composable private fun SectionTitle(title: String) { Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold) }
+
+@Composable
+private fun SettingsScreen(model: SignalsModel, modifier: Modifier) {
+    val muted = model.state.muteWhileScreenOn
+    LazyColumn(modifier.fillMaxHeight(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        item { SectionTitle(stringResource(R.string.notification_behavior)) }
+        item {
+            OutlinedCard(Modifier.fillMaxWidth()) {
+                Row(Modifier.fillMaxWidth().testTag("mute-while-screen-on")
+                    .toggleable(value = muted, role = Role.Switch, onValueChange = model::setMuteWhileScreenOn)
+                    .padding(20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.mute_while_screen_on), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.mute_while_screen_on_summary), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Switch(checked = muted, onCheckedChange = null)
+                }
+            }
+        }
+        item { Text(stringResource(R.string.mute_while_screen_on_detail), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant) }
+    }
+}
 
 @Composable
 private fun HomeScreen(model: SignalsModel, modifier: Modifier, onApps: () -> Unit, allowBluetooth: () -> Unit, allowStatus: () -> Unit, openBluetooth: () -> Unit, openAccess: () -> Unit) {

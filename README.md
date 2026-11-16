@@ -4,9 +4,9 @@
 
 Air Signals listens for notifications from apps you choose and sends a recognizable group of buzzes to your wrist. It runs locally on your phone, with a Material 3 interface and an explicit **Start alerts / Stop alerts** control.
 
-> **Experimental preview · 0.5** — tested on one Fitbit Air firmware and a Galaxy S25+. The transport uses undocumented device behavior; battery impact and long-term reliability are still being evaluated. This is an independent project, unaffiliated with Google or Fitbit.
+> **Experimental preview · 0.6** — the transport was previously tested on one Fitbit Air firmware and a Galaxy S25+; the new screen-on mute option was checked on an emulator. The transport uses undocumented device behavior; battery impact and long-term reliability are still being evaluated. This is an independent project, unaffiliated with Google or Fitbit.
 
-<img src="docs/images/home.png" alt="Air Signals home screen with connection permissions and alert controls" width="280" /> <img src="docs/images/patterns.png" alt="Three editable wrist signals with one, two, and three groups" width="280" />
+<img src="docs/images/home.png" alt="Air Signals home screen with connection permissions and alert controls" width="280" /> <img src="docs/images/patterns.png" alt="Three editable wrist signals with one, two, and three groups" width="280" /> <img src="docs/images/settings.png" alt="Settings toggle for muting Fitbit notifications while the phone screen is on" width="280" />
 
 ## Features
 
@@ -14,6 +14,7 @@ Air Signals listens for notifications from apps you choose and sends a recogniza
 - Edit each signal to send **1–3 groups**, with an approximate **1.2–3.0 second gap** between groups.
 - Preview a signal after stopping alerts and confirming the preview.
 - Combine short bursts from the same app, expire stale alerts, and limit repeated deliveries.
+- Open **Settings → Mute while phone screen is on** to skip notification vibrations while your phone is awake. This option is off by default.
 - Check that the Air's original vibration strength is restored after each completed operation.
 - Use wallpaper-based colors, system light/dark mode, scalable text, and a navigation rail in wide windows.
 
@@ -33,14 +34,14 @@ Only ARM64 native libraries are included. Other tracker models, firmware version
 
 ## Download and install
 
-Get the **[0.5 preview APK (ARM64)](https://github.com/yashsharan0805/air-signals/releases/download/v0.5-preview/air-signals-0.5.apk)** from [GitHub Releases](https://github.com/yashsharan0805/air-signals/releases/tag/v0.5-preview). The release also includes a [SHA-256 checksum](https://github.com/yashsharan0805/air-signals/releases/download/v0.5-preview/air-signals-0.5.sha256).
+Get the **[0.6 preview APK (ARM64)](https://github.com/yashsharan0805/air-signals/releases/download/v0.6-preview/air-signals-0.6.apk)** from [GitHub Releases](https://github.com/yashsharan0805/air-signals/releases/tag/v0.6-preview). The release also includes a [SHA-256 checksum](https://github.com/yashsharan0805/air-signals/releases/download/v0.6-preview/air-signals-0.6.sha256).
 
 Download the APK on your Android phone and open it to install. Android may ask you to allow installations from the browser or file manager you use. This is a **signed debug preview** for ARM64 phones running Android 12L / API 32 or newer.
 
 For an authorized USB-connected device:
 
 ```sh
-adb install -r air-signals-0.5.apk
+adb install -r air-signals-0.6.apk
 ```
 
 Then follow [Set up your signals](#set-up-your-signals). Updating an existing installation requires the same signing identity.
@@ -78,6 +79,14 @@ Debug builds use your machine's debug signing key. Updating an existing installa
 5. Return to **Home → Start alerts**. The persistent notification includes a **Stop alerts** action.
 
 Fresh installations start with no app assignments. Stop alerts before previewing a pattern or running the read-only device checks. After a phone restart, or if a delivery failure pauses the service, open the app and start alerts again.
+
+### Mute while using your phone
+
+In **Settings**, enable **Mute while phone screen is on**. The preference is saved locally and applies immediately, including when alerts are already running. It is off by default to preserve existing behavior.
+
+When enabled, notifications received while the phone is awake are discarded. Waking the phone also discards pending alerts and cancels remaining groups in an active notification signal. A vibration write already sent to the Air may finish its verification. Skipped alerts are never replayed when the phone sleeps; new notifications can vibrate normally. The relay stays running.
+
+The check uses Android's [`PowerManager.isInteractive()`](https://developer.android.com/reference/android/os/PowerManager#isInteractive()): the awake lock screen counts as screen on; a dozing Always On Display does not. Deliberate **Patterns → Preview** commands remain available while the screen is on. This setting is included in the 0.6 preview APK.
 
 ## Delivery behavior
 
@@ -133,6 +142,8 @@ There is no `INTERNET`, location, contacts, or health-data permission. Local pri
 | 0.5 phone installation | Installed on the S25+; APK hash verified and Home screen checked in dark mode |
 
 The 0.5 UI tests cover setup gating, search, app assignment saving, pattern Save/Cancel, activity recreation, and screen capture. They exercise local UI/preferences and do not establish physical motor behavior. See the [UI report](docs/validation/ui-0.5.json), [calibration evidence](docs/validation/air-signals-calibration.json), and [notification trials](docs/validation/air-signals-notification-tests.json).
+
+The 0.6 screen-on mute release passed a new build, lint (zero errors, 29 warnings), and 13 emulator checks. Its Settings screen was reviewed in light mode and dark mode at 150% text size. See the [screen-on mute validation report](docs/validation/screen-on-mute.json). Physical Fitbit testing of this change remains pending.
 
 **Google Health coexistence needs further testing.** An earlier build intermittently stalled its alarm list. The 0.4 change to release the idle Bluetooth client passed subsequent short checks with the alarm list loading. That does not establish uninterrupted sync or long-term compatibility.
 

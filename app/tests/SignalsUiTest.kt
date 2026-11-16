@@ -12,6 +12,28 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class SignalsUiTest {
     @get:Rule val ui = createAndroidComposeRule<LabActivity>()
+    @Test fun screenOnMuteAppliesImmediatelyAndPersistsAcrossRecreation() {
+        val prefs = Rules.prefs(ui.activity)
+        val existed = prefs.contains(Rules.MUTE_WHILE_SCREEN_ON)
+        val before = Rules.muteWhileScreenOn(ui.activity)
+        try {
+            ui.onNodeWithText("Settings", useUnmergedTree = true).performClick()
+            val toggle = ui.onNodeWithTag("mute-while-screen-on")
+            if (before) toggle.assertIsOn() else toggle.assertIsOff()
+            toggle.performClick()
+            assertEquals(!before, Rules.muteWhileScreenOn(ui.activity))
+            ui.activityRule.scenario.recreate()
+            ui.waitForIdle()
+            if (before) toggle.assertIsOff() else toggle.assertIsOn()
+            toggle.performClick()
+            assertEquals(before, Rules.muteWhileScreenOn(ui.activity))
+        } finally {
+            prefs.edit().apply {
+                if (existed) putBoolean(Rules.MUTE_WHILE_SCREEN_ON, before)
+                else remove(Rules.MUTE_WHILE_SCREEN_ON)
+            }.commit()
+        }
+    }
     @Test fun missingPermissionsPreventStartingAlerts() {
         ui.onNodeWithText("Start alerts").assertIsNotEnabled()
         ui.onNodeWithText("Complete setup below to start.").assertExists()

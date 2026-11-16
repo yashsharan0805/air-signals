@@ -1,7 +1,6 @@
 package dev.codex.fitbitairlab
 
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -17,9 +16,12 @@ class UiScreenshots {
     @get:Rule val ui = createAndroidComposeRule<LabActivity>()
     private fun capture(name: String) {
         ui.waitForIdle()
+        // Capture the whole Android window, including dialogs, without relying
+        // on Compose's PixelCopy deadline on a busy emulator renderer.
+        val screenshot = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
         val directory = File(ui.activity.filesDir, "ui-captures").apply { mkdirs() }
         File(directory, "$name.png").outputStream().use {
-            ui.onRoot().captureToImage().asAndroidBitmap().compress(Bitmap.CompressFormat.PNG, 100, it)
+            screenshot.compress(Bitmap.CompressFormat.PNG, 100, it)
         }
     }
     @Test fun captureScreens() {
@@ -32,13 +34,11 @@ class UiScreenshots {
         capture("patterns")
         ui.onAllNodesWithText("Edit").onFirst().performClick()
         ui.onNode(hasText("2 groups") and hasClickAction()).performClick()
-        // Capture the window for the sheet: Compose root capture may return its background window.
         ui.onNodeWithText("Edit signal A").assertIsDisplayed()
-        ui.waitForIdle()
-        val screenshot = requireNotNull(InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot())
-        File(File(ui.activity.filesDir, "ui-captures"), "editor.png").outputStream().use {
-            screenshot.compress(Bitmap.CompressFormat.PNG, 100, it)
-        }
+        capture("editor")
         ui.onNodeWithText("Cancel").performClick()
+        ui.onNodeWithText("Settings", useUnmergedTree = true).performClick()
+        ui.onNodeWithTag("mute-while-screen-on").assertIsDisplayed()
+        capture("settings")
     }
 }

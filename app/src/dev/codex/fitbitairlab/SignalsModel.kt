@@ -21,6 +21,7 @@ internal data class SignalsState(
     val bluetoothOn: Boolean = false,
     val listenerAllowed: Boolean = false,
     val notificationsAllowed: Boolean = false,
+    val muteWhileScreenOn: Boolean = false,
     val rules: Map<String, Int> = emptyMap(),
     val profiles: List<SignalProfile> = emptyList(),
     val lastStatus: String = "",
@@ -47,6 +48,7 @@ class SignalsModel(application: Application) : AndroidViewModel(application) {
             bluetoothOn = bluetooth && runCatching { ctx.getSystemService(BluetoothManager::class.java).adapter?.isEnabled == true }.getOrDefault(false),
             listenerAllowed = RelayService.accessGranted(ctx),
             notificationsAllowed = Build.VERSION.SDK_INT < 33 || ctx.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED,
+            muteWhileScreenOn = Rules.muteWhileScreenOn(ctx),
             rules = Rules.all(ctx),
             profiles = (1..3).map { SignalProfile(Rules.groups(ctx, it), Rules.gap(ctx, it)) },
             lastStatus = Rules.prefs(ctx).getString("last_state", "") ?: "",
@@ -74,6 +76,10 @@ class SignalsModel(application: Application) : AndroidViewModel(application) {
     internal fun saveProfile(profile: Int, groups: Int, gap: Int) {
         Rules.prefs(ctx).edit().putInt("groups_$profile", groups).putInt("gap_$profile", gap).apply()
         refresh(); message(R.string.pattern_saved)
+    }
+    internal fun setMuteWhileScreenOn(enabled: Boolean) {
+        Rules.prefs(ctx).edit().putBoolean(Rules.MUTE_WHILE_SCREEN_ON, enabled).apply()
+        refresh()
     }
     internal fun startAlerts() {
         refresh()
