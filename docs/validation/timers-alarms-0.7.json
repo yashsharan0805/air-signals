@@ -1,0 +1,138 @@
+{
+  "version": "0.7-preview",
+  "version_code": 7,
+  "verified_on_utc": "2026-11-16",
+  "source_base_commit": "949d53e6166a485eb24b22b325ffebf22453c3c3",
+  "source_status": "Built and validated locally before committing the 0.7 implementation",
+  "package": "dev.codex.fitbitairlab",
+  "apk_sha256": "4940b7510505d3c3d7c40df5374c5204e109aebb7a5a14b1470838721522719c",
+  "signing_certificate_sha256": "3a4487f83d6ba52d5382730970345c14c6bec293c533f6246a2695634e379f28",
+  "updates_existing_project_signed_installation": true,
+  "build": "passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 36,
+    "categories": {
+      "CheckResult": 3,
+      "AndroidGradlePluginVersion": 1,
+      "GradleDependency": 7,
+      "ConfigurationScreenWidthHeight": 1,
+      "UseRequiresApi": 2,
+      "LogNotTimber": 11,
+      "ObsoleteSdkInt": 1,
+      "UnusedResources": 1,
+      "UseKtx": 9
+    }
+  },
+  "instrumentation": {
+    "passed": 50,
+    "failed": 0,
+    "skipped": 0,
+    "target": "ARM64 Android 16 / API 36 emulator",
+    "duration_seconds": 61.335,
+    "coverage": [
+      "22 scheduling/state-machine cases",
+      "5 operation ownership/serialization cases",
+      "4 real AlarmManager/service/notification-action cases",
+      "6 timer/alarm/clock UI cases",
+      "12 existing screen-mute and app regression cases",
+      "UI screenshot fixture"
+    ],
+    "scope": "Full timer/alarm/clock baseline before the app-picker-only change. The final APK app-picker change is verified by the targeted run below."
+  },
+  "recovery_trials": {
+    "process_death": {
+      "passed": true,
+      "duration_seconds": 45,
+      "process_terminated_before_expiry": true,
+      "process_restarted_at_expiry": true,
+      "phone_stop_worked": true
+    },
+    "reboot": {
+      "passed": true,
+      "duration_seconds": 90,
+      "boot_receiver_restored_without_activity": true,
+      "expired_after_reboot": true,
+      "phone_stop_worked": true
+    }
+  },
+  "visual_review": {
+    "light_timer_countdown": "reviewed",
+    "light_alarm_clock": "reviewed",
+    "dark_clock_150_percent_text": "reviewed; dial and actions visible",
+    "light_alarm_details": "reviewed; selected time, label, repeat days and signal options"
+  },
+  "implemented": [
+    "one countdown with presets/custom duration and pause/resume/cancel/restart",
+    "one-time and weekday alarms, labels, signal profiles, enable/edit/skip/delete",
+    "phone Stop and five-minute Snooze actions",
+    "optional bounded phone alarm sound",
+    "screen-on notification mute does not suppress scheduled alerts",
+    "persistent exact scheduling with clock/time-zone/reboot/app-start recovery",
+    "priority serialization and cancellation scoped to the operation owner",
+    "two-minute ringing limit and Android-managed notification timeouts",
+    "stock Android-style clock dial, optional keyboard entry, and system 12/24-hour time display",
+    "cached Android app icons and All apps / Enabled only filtering, combined with name/package search"
+  ],
+  "not_implemented": [
+    "native Fitbit alarm programming",
+    "tap-to-dismiss and tap-to-start activity shortcuts",
+    "Google Clock or Samsung Clock mirroring"
+  ],
+  "scope": [
+    "The user selected emulator checks for this run. No physical Fitbit vibration or tap trial was performed.",
+    "Runtime emulator checks used notification and exact-alarm permission with Bluetooth and notification-listener access denied.",
+    "The phone must be on and Bluetooth available for wrist delivery; connection setup adds latency.",
+    "Native alarm programming remains unavailable in the current session role; the recorded /alarms probe returned 4.01.",
+    "There is no proven real-time phone-facing tap event in the current transport.",
+    "An in-flight haptic write may complete restoration after Stop. Physical delivery latency, battery impact, and Google Health coexistence need device validation."
+  ],
+  "alarm_clock_ui": {
+    "component": "Material 3 TimePicker / TimeInput",
+    "opens_with_dial": true,
+    "respects_system_12_24_hour_setting": true,
+    "additional_24_hour_save_check": "passed",
+    "manual_dial_selection": "09:30 selected with the clock face and saved correctly; temporary alarm deleted",
+    "cancellation_and_activity_recreation": "passed",
+    "tap_time_to_edit": true
+  },
+  "artifact_updated_on": "2026-11-17",
+  "app_picker_validation": {
+    "feature": "App icons and Enabled only filter",
+    "version": "0.7-preview",
+    "verified_on": "2026-11-17",
+    "apk_sha256": "4940b7510505d3c3d7c40df5374c5204e109aebb7a5a14b1470838721522719c",
+    "build": "passed",
+    "lint": {
+      "errors": 0,
+      "warnings": 36
+    },
+    "ui_checks": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "target": "ARM64 Android 16 / API 36 emulator",
+      "duration_seconds": 57.898,
+      "coverage": [
+        "installed app icon display and a fallback for missing saved apps",
+        "enabled-only filtering with name/package search",
+        "switching back to All apps restores disabled results",
+        "draft Off, Discard, Save and activity recreation",
+        "empty enabled list",
+        "six existing app UI checks",
+        "screenshot fixture"
+      ]
+    },
+    "visual_review": {
+      "all_apps_icons": "reviewed",
+      "enabled_only": "reviewed with a saved Settings assignment; temporary assignment removed"
+    },
+    "behavior": {
+      "filter_uses_current_draft": true,
+      "save_still_required": true,
+      "search_combines_with_filter": true,
+      "filter_survives_activity_recreation": true,
+      "missing_saved_assignments_remain_editable": true
+    }
+  }
+}

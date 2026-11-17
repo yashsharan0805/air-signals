@@ -4,7 +4,7 @@
 
 Air Signals listens for notifications from apps you choose and sends a recognizable group of buzzes to your wrist. It runs locally on your phone, with a Material 3 interface and an explicit **Start alerts / Stop alerts** control.
 
-> **Experimental preview · 0.6** — the transport was previously tested on one Fitbit Air firmware and a Galaxy S25+; the new screen-on mute option was checked on an emulator. The transport uses undocumented device behavior; battery impact and long-term reliability are still being evaluated. This is an independent project, unaffiliated with Google or Fitbit.
+> **Experimental preview · current source 0.7** — the transport was previously tested on one Fitbit Air firmware and a Galaxy S25+; timers, alarms, and screen-on muting have emulator validation. The published download below remains 0.6. The transport uses undocumented device behavior; battery impact and long-term reliability are still being evaluated. This is an independent project, unaffiliated with Google or Fitbit.
 
 <img src="docs/images/home.png" alt="Air Signals home screen with connection permissions and alert controls" width="280" /> <img src="docs/images/patterns.png" alt="Three editable wrist signals with one, two, and three groups" width="280" /> <img src="docs/images/settings.png" alt="Settings toggle for muting Fitbit notifications while the phone screen is on" width="280" />
 
@@ -14,6 +14,7 @@ Air Signals listens for notifications from apps you choose and sends a recogniza
 - Edit each signal to send **1–3 groups**, with an approximate **1.2–3.0 second gap** between groups.
 - Preview a signal after stopping alerts and confirming the preview.
 - Combine short bursts from the same app, expire stale alerts, and limit repeated deliveries.
+- In the 0.7 source build, run a countdown timer or schedule one-time/weekday alarms with phone Stop/Snooze controls, optional phone alarm sound, and A/B/C wrist signals.
 - Open **Settings → Mute while phone screen is on** to skip notification vibrations while your phone is awake. This option is off by default.
 - Check that the Air's original vibration strength is restored after each completed operation.
 - Use wallpaper-based colors, system light/dark mode, scalable text, and a navigation rail in wide windows.
@@ -74,9 +75,11 @@ Debug builds use your machine's debug signing key. Updating an existing installa
 
 1. Pair the Air in Google Health and check that the connection works there.
 2. Open **Air Signals → Home** and allow Bluetooth access, notification access, and the status notification.
-3. Open **Apps**, search for an app, and choose **Signal A**, **B**, or **C**. Choose **Off** to remove an assignment. Tap **Save** at the top.
+3. Open **Apps**, identify the app by its icon or search its name/package, and choose **Signal A**, **B**, or **C**. Use **Enabled only** to review apps with a signal selected. Choose **Off** to remove an assignment. Tap **Save** at the top.
 4. Open **Patterns** to edit the group count and gap. **Save** applies a change; **Cancel** preserves the previous signal.
 5. Return to **Home → Start alerts**. The persistent notification includes a **Stop alerts** action.
+
+<img src="docs/images/apps.png" alt="Installed app icons in the app selector" width="280" /> <img src="docs/images/apps-enabled.png" alt="Enabled-only filter showing assigned app signals" width="280" />
 
 Fresh installations start with no app assignments. Stop alerts before previewing a pattern or running the read-only device checks. After a phone restart, or if a delivery failure pauses the service, open the app and start alerts again.
 
@@ -87,6 +90,23 @@ In **Settings**, enable **Mute while phone screen is on**. The preference is sav
 When enabled, notifications received while the phone is awake are discarded. Waking the phone also discards pending alerts and cancels remaining groups in an active notification signal. A vibration write already sent to the Air may finish its verification. Skipped alerts are never replayed when the phone sleeps; new notifications can vibrate normally. The relay stays running.
 
 The check uses Android's [`PowerManager.isInteractive()`](https://developer.android.com/reference/android/os/PowerManager#isInteractive()): the awake lock screen counts as screen on; a dozing Always On Display does not. Deliberate **Patterns → Preview** commands remain available while the screen is on. This setting is included in the 0.6 preview APK.
+
+## Timers and alarms (0.7 source build)
+
+<img src="docs/images/timer.png" alt="Running countdown with Pause, Cancel and Restart controls" width="280" /> <img src="docs/images/alarm-clock.png" alt="Android-style clock dial with AM/PM and optional keyboard entry" width="280" />
+
+Open **Timers** in the navigation bar, then choose **Timers** or **Alarms**. This feature is not included in the published 0.6 APK; build the current source to use it.
+
+- Allow **Alarms & reminders** and phone notifications. Allow **Nearby devices** for wrist delivery; phone alarm sound can work without Bluetooth permission. Notification-listener access and selected app assignments are not required.
+- Start one countdown from one second to seven days. Pause/resume, cancel, or restart it; starting another replaces the current countdown.
+- Add up to twenty alarms with an Android-style clock dial, label, optional weekday repeats, and a signal. The picker follows your phone’s 12/24-hour format and includes keyboard entry. Toggle, edit, skip the next occurrence, or delete an alarm.
+- At expiry, use **Stop** or **Snooze 5 min** in the app or notification. Optional phone alarm sound uses the phone's alarm volume. Ringing is bounded to two minutes; wrist signals repeat about fifteen seconds after each completed delivery.
+- Notification forwarding and its screen-on mute setting are separate. Explicit timers/alarms can ring while the screen is on and while notification forwarding is stopped.
+- Timers use elapsed time, and calendar alarms follow the local time zone. Schedules are restored after reboot/unlock, app updates, and reopening the app. Android force-stop disables delivery until the app is reopened. Alerts more than sixty seconds late are recorded as missed instead of replayed.
+
+The phone must remain on and the Air must be connected/reachable at expiry. Connection setup adds latency; a precisely scheduled Android broadcast does not guarantee an exact wrist vibration time. Failed or ambiguous wrist delivery pauses wrist repetition for that ringing session, leaving the phone alert available. An in-flight write may finish its restoration after Stop.
+
+**Wrist-tap controls are unavailable.** These are phone-managed alerts, and must be dismissed on the phone. Native Fitbit alarms support double-tap dismissal, but this app's connection cannot currently program those alarms or obtain a reliable real-time tap event. Google Clock/Samsung Clock mirroring and tap-to-start workouts are not implemented. See the [implementation and capability notes](docs/timers-alarms.md) and [0.7 validation report](docs/validation/timers-alarms-0.7.json).
 
 ## Delivery behavior
 
@@ -127,6 +147,9 @@ Android grants notification access system-wide. Air Signals filters by the selec
 - **Notification access:** detect notifications from your chosen apps.
 - **Status notification / foreground service:** keep user-started alert routing visible and provide Stop controls.
 - **Wake lock:** allow an active delivery to complete while the phone is idle.
+- **Alarms & reminders:** schedule explicit timers and alarms precisely.
+- **Boot completed:** restore saved schedules after reboot/unlock. Notification forwarding still requires its own Start control.
+- **Media playback foreground service:** play optional phone alarm sound during a bounded ringing session.
 
 There is no `INTERNET`, location, contacts, or health-data permission. Local private diagnostics contain selected app package names, timing, and transport outcomes. The debug build can be inspected through ADB by an authorized developer.
 
@@ -147,7 +170,7 @@ The 0.6 screen-on mute release passed a new build, lint (zero errors, 29 warning
 
 **Google Health coexistence needs further testing.** An earlier build intermittently stalled its alarm list. The 0.4 change to release the idle Bluetooth client passed subsequent short checks with the alarm list loading. That does not establish uninterrupted sync or long-term compatibility.
 
-Battery impact, automatic out-of-range recovery, reboot recovery, all notification types, and other firmware versions remain unverified. A complete TalkBack/accessibility audit has not been performed.
+Battery impact, automatic out-of-range recovery, all notification types, and other firmware versions remain unverified. Scheduled timer recovery was checked after emulator process death and reboot; physical-device reboot behavior remains unverified. A complete TalkBack/accessibility audit has not been performed.
 
 ## Development
 
@@ -159,7 +182,7 @@ Battery impact, automatic out-of-range recovery, reboot recovery, all notificati
 ANDROID_SERIAL=emulator-5554 ./gradlew :app:connectedDebugAndroidTest
 ```
 
-Use an emulator without notification access or Bluetooth permissions for the setup-gating tests. UI tests change only local test settings and never start the relay or send BLE commands.
+Use an ARM64 emulator without notification-listener access or Bluetooth permission for setup-gating tests. The timer runtime tests also need phone notification permission and exact-alarm access; they run only on an emulator, start the real phone alarm service, and exercise expiry/Stop/Snooze without BLE. See the timer implementation notes for the full test procedure.
 
 | Path | Contents |
 | --- | --- |
@@ -168,7 +191,7 @@ Use an emulator without notification access or Bluetooth permissions for the set
 | `app/src/com/fitbit/goldengate/` | Open-source Golden Gate Kotlin bindings |
 | `app/src/io/flutter/` | Minimal channel adapters for the native Android host |
 | `vendor/fitbit-air/` | ARM64 Golden Gate native libraries |
-| `app/tests/` | UI and local-preference instrumentation tests |
+| `app/tests/` | UI, schedule state-machine, operation ownership, and emulator alarm-runtime tests |
 | `docs/` | Usage guide, screenshots, and validation records |
 
 When reporting a bug, include the app version, Android version, tracker firmware, and a reproducible test using synthetic notifications. Keep message content, device addresses, and other personal data out of public reports.

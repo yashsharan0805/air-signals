@@ -36,9 +36,25 @@ object LabBridge {
 
 object AirEngine {
     private var plugin: FitbitAirPlugin? = null
-    fun call(ctx: Context, method: String, args: Map<String, Any?>? = null, done: (Map<String, Any?>) -> Unit) {
-        Handler(Looper.getMainLooper()).post {
-            val current = plugin ?: FitbitAirPlugin().also { it.onAttachedToEngine(LabBridge.binding(ctx)); plugin = it }
+    private val handler = Handler(Looper.getMainLooper())
+    private data class Command(val ctx: Context, val method: String, val args: Map<String, Any?>?)
+    private val operations = OwnedOperationQueue<Command>(
+        execute = { command, done -> execute(command.ctx, command.method, command.args, done) },
+        cancelActive = { plugin?.onMethodCall(MethodCall("cancelOperation", null), object : MethodChannel.Result {
+            override fun success(result: Any?) { }
+            override fun error(code: String, message: String?, details: Any?) { }
+            override fun notImplemented() { }
+        }) },
+    )
+    internal val busy get() = operations.busy
+    fun cancel(owner: String) { handler.post { operations.cancel(owner) } }
+    fun call(ctx: Context, method: String, args: Map<String, Any?>? = null, owner: String = "manual", priority: Int = 0, allowed: () -> Boolean = { true }, done: (Map<String, Any?>) -> Unit) {
+        handler.post {
+            if (method == "keepLinkWarm") execute(ctx.applicationContext, method, args, done)
+            else operations.submit(owner, priority, Command(ctx.applicationContext, method, args), allowed, done)
+        }
+    }
+    private fun execute(ctx: Context, method: String, args: Map<String, Any?>?, done: (Map<String, Any?>) -> Unit) {
             val start = SystemClock.elapsedRealtime()
             var completed = false
             fun finish(result: Map<String, Any?>) {
@@ -52,6 +68,7 @@ object AirEngine {
                 Handler(Looper.getMainLooper()).post { done(full) }
             }
             try {
+                val current = plugin ?: FitbitAirPlugin().also { it.onAttachedToEngine(LabBridge.binding(ctx)); plugin = it }
                 current.onMethodCall(MethodCall(method, args), object : MethodChannel.Result {
                     override fun success(result: Any?) = finish(mapOf("status" to "success", "result" to result))
                     override fun error(code: String, message: String?, details: Any?) = finish(mapOf("status" to "error", "code" to code, "message" to message))
@@ -60,7 +77,6 @@ object AirEngine {
             } catch (failure: Throwable) {
                 finish(mapOf("status" to "error", "code" to "CLIENT_ERROR", "message" to failure.javaClass.simpleName))
             }
-        }
     }
 }
 

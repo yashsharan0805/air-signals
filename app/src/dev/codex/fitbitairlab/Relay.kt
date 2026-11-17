@@ -91,7 +91,7 @@ class RelayService : Service() {
         handler.removeCallbacks(drainTask)
         // Pattern cancellation lets an in-flight write finish its verification,
         // then skips remaining groups and performs normal connection cleanup.
-        if (busy) AirEngine.call(this, "cancelOperation") { }
+        if (busy) AirEngine.cancel("relay")
         state(getString(R.string.screen_on_muted_status))
     }
     private fun updateScreenPolicy() {
@@ -109,11 +109,16 @@ class RelayService : Service() {
         busy = true
         lock = getSystemService(PowerManager::class.java).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AirSignals:delivery").apply { acquire(60000) }
         state("Sending ${item.groups} group(s)")
-        AirEngine.call(this, "pattern", mapOf("groups" to item.groups, "gapMillis" to item.gapMillis)) { result ->
+        AirEngine.call(this, "pattern", mapOf("groups" to item.groups, "gapMillis" to item.gapMillis), owner = "relay", allowed = {
+            accepting && !Rules.alertsMuted(this) && SystemClock.elapsedRealtime() - item.received < 45000
+        }) { result ->
             if (lock?.isHeld == true) lock?.release()
-            lock = null; busy = false; lastCompleted = SystemClock.elapsedRealtime()
-            LabBridge.record(this, result + mapOf("event" to "delivery", "source" to item.source, "queueAgeMillis" to (lastCompleted - item.received)))
-            if (result["status"] != "success") {
+            lock = null; busy = false
+            if (result["status"] != "skipped") lastCompleted = SystemClock.elapsedRealtime()
+            LabBridge.record(this, result + mapOf("event" to "delivery", "source" to item.source, "queueAgeMillis" to (SystemClock.elapsedRealtime() - item.received)))
+            if (result["status"] == "skipped") {
+                if (!accepting) finishStop() else updateScreenPolicy()
+            } else if (result["status"] != "success") {
                 requestStop("Delivery failed. Alerts paused; check your Air and vibration strength before restarting.")
             } else {
                 val cleanup = result["cleanup"] as? Map<*, *>
@@ -128,7 +133,7 @@ class RelayService : Service() {
         handler.post {
             accepting = false; queue.clear(); handler.removeCallbacks(drainTask)
             state(reason)
-            if (busy) AirEngine.call(this, "cancelOperation") { } else finishStop()
+            if (busy) AirEngine.cancel("relay") else finishStop()
         }
     }
     private fun finishStop() {

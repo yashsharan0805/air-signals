@@ -40,5 +40,11 @@ class UiScreenshots {
         ui.onNodeWithText("Settings", useUnmergedTree = true).performClick()
         ui.onNodeWithTag("mute-while-screen-on").assertIsDisplayed()
         capture("settings")
+        ui.onNodeWithTag("nav-timers").performClick()
+        ui.onNodeWithTag("time-alert-list").performScrollToNode(hasTestTag("start-timer"))
+        capture("timers")
+        ui.onNodeWithTag("time-alert-list").performScrollToNode(hasTestTag("alarm-tab"))
+        ui.onNodeWithTag("alarm-tab").performClick()
+        capture("alarms")
     }
 }

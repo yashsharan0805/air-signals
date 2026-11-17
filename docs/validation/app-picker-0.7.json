@@ -1,0 +1,38 @@
+{
+  "feature": "App icons and Enabled only filter",
+  "version": "0.7-preview",
+  "verified_on": "2026-11-17",
+  "apk_sha256": "4940b7510505d3c3d7c40df5374c5204e109aebb7a5a14b1470838721522719c",
+  "build": "passed",
+  "lint": {
+    "errors": 0,
+    "warnings": 36
+  },
+  "ui_checks": {
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "target": "ARM64 Android 16 / API 36 emulator",
+    "duration_seconds": 57.898,
+    "coverage": [
+      "installed app icon display and a fallback for missing saved apps",
+      "enabled-only filtering with name/package search",
+      "switching back to All apps restores disabled results",
+      "draft Off, Discard, Save and activity recreation",
+      "empty enabled list",
+      "six existing app UI checks",
+      "screenshot fixture"
+    ]
+  },
+  "visual_review": {
+    "all_apps_icons": "reviewed",
+    "enabled_only": "reviewed with a saved Settings assignment; temporary assignment removed"
+  },
+  "behavior": {
+    "filter_uses_current_draft": true,
+    "save_still_required": true,
+    "search_combines_with_filter": true,
+    "filter_survives_activity_recreation": true,
+    "missing_saved_assignments_remain_editable": true
+  }
+}

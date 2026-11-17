@@ -4,6 +4,7 @@ package dev.codex.fitbitairlab
 import android.Manifest
 import android.content.ComponentName
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Build
 import android.os.Handler
@@ -15,6 +16,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -68,7 +70,9 @@ class LabActivity : ComponentActivity() {
                     openAccess = {
                         startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_DETAIL_SETTINGS)
                             .putExtra(Settings.EXTRA_NOTIFICATION_LISTENER_COMPONENT_NAME, ComponentName(this, AirNotificationListener::class.java).flattenToString()))
-                    })
+                    },
+                    openExactAlarms = { startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName"))) },
+                    initialPage = intent.getStringExtra("page") ?: "home")
             }
         }
     }
@@ -84,15 +88,16 @@ internal fun SignalsTheme(content: @Composable () -> Unit) {
 }
 
 private data class Destination(val key: String, val label: Int, val icon: ImageVector)
-private val destinations = listOf(Destination("home", R.string.home, Icons.Default.Home), Destination("apps", R.string.apps, Icons.Default.Menu), Destination("patterns", R.string.patterns, Icons.Default.Notifications), Destination("settings", R.string.settings, Icons.Default.Settings))
+private val destinations = listOf(Destination("home", R.string.home, Icons.Default.Home), Destination("apps", R.string.apps, Icons.Default.Menu), Destination("patterns", R.string.patterns, Icons.Default.Notifications), Destination("timers", R.string.timers, Icons.Default.DateRange), Destination("settings", R.string.settings, Icons.Default.Settings))
 
 @Composable
-private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowStatus: () -> Unit, openBluetooth: () -> Unit, openAccess: () -> Unit) {
+private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowStatus: () -> Unit, openBluetooth: () -> Unit, openAccess: () -> Unit, openExactAlarms: () -> Unit, initialPage: String) {
     val state = model.state
     val focus = LocalFocusManager.current
-    var page by rememberSaveable { mutableStateOf("home") }
+    var page by rememberSaveable { mutableStateOf(initialPage.takeIf { p -> destinations.any { it.key == p } } ?: "home") }
     var draft by rememberSaveable { mutableStateOf<Map<String, Int>>(state.rules.toMap()) }
     var query by rememberSaveable { mutableStateOf("") }
+    var enabledOnly by rememberSaveable { mutableStateOf(false) }
     var assignment by rememberSaveable { mutableStateOf<String?>(null) }
     var edit by rememberSaveable { mutableStateOf<Int?>(null) }
     var preview by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -108,7 +113,7 @@ private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowSta
             if (rail) NavigationRail(Modifier.windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Vertical))) {
                 Spacer(Modifier.height(20.dp))
                 destinations.forEach { destination ->
-                    NavigationRailItem(selected = page == destination.key, onClick = { page = destination.key },
+                    NavigationRailItem(selected = page == destination.key, onClick = { page = destination.key }, modifier = Modifier.testTag("nav-${destination.key}"),
                         icon = { Icon(destination.icon, null) }, label = { Text(stringResource(destination.label)) })
                 }
             }
@@ -123,7 +128,7 @@ private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowSta
                 bottomBar = {
                     if (!rail) NavigationBar {
                         destinations.forEach { destination ->
-                            NavigationBarItem(selected = page == destination.key, onClick = { page = destination.key },
+                            NavigationBarItem(selected = page == destination.key, onClick = { page = destination.key }, modifier = Modifier.testTag("nav-${destination.key}"),
                                 icon = { Icon(destination.icon, null) }, label = { Text(stringResource(destination.label)) })
                         }
                     }
@@ -136,8 +141,9 @@ private fun SignalsApp(model: SignalsModel, allowBluetooth: () -> Unit, allowSta
                             allowBluetooth, allowStatus, openBluetooth, { accessDialog = true })
                         "patterns" -> PatternsScreen(model, Modifier.widthIn(max = 720.dp), { preview = it }, { edit = it })
                         "settings" -> SettingsScreen(model, Modifier.widthIn(max = 720.dp))
-                        "apps" -> AppsScreen(model, draft, query, Modifier.widthIn(max = 840.dp),
-                            onQuery = { query = it }, onApp = { focus.clearFocus(); assignment = it }, onDiscard = { draft = state.rules.toMap() })
+                        "timers" -> TimeAlertsScreen(model, Modifier.widthIn(max = 720.dp), openExactAlarms, allowStatus, allowBluetooth)
+                        "apps" -> AppsScreen(model, draft, query, enabledOnly, Modifier.widthIn(max = 840.dp),
+                            onQuery = { query = it }, onEnabledOnly = { enabledOnly = it }, onApp = { focus.clearFocus(); assignment = it }, onDiscard = { draft = state.rules.toMap() })
                     }
                 }
             }
@@ -265,8 +271,8 @@ private fun HomeScreen(model: SignalsModel, modifier: Modifier, onApps: () -> Un
                 TextButton(onClick = { expanded = !expanded }, Modifier.fillMaxWidth().heightIn(min = 48.dp)) { Text(stringResource(R.string.device_checks)) }
                 if (expanded) Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(stringResource(R.string.device_checks_help))
-                    TextButton(enabled = !state.running && !model.busy && state.bluetoothOn, onClick = { model.command("readDeviceInfo") }) { Text(stringResource(R.string.read_device)) }
-                    TextButton(enabled = !state.running && !model.busy && state.bluetoothOn, onClick = { model.command("getHapticIntensity") }) { Text(stringResource(R.string.read_strength)) }
+                    TextButton(enabled = !state.running && model.timeAlerts.active.isEmpty() && !model.busy && state.bluetoothOn, onClick = { model.command("readDeviceInfo") }) { Text(stringResource(R.string.read_device)) }
+                    TextButton(enabled = !state.running && model.timeAlerts.active.isEmpty() && !model.busy && state.bluetoothOn, onClick = { model.command("getHapticIntensity") }) { Text(stringResource(R.string.read_strength)) }
                     if (model.result.isNotBlank()) Text(model.result)
                 }
             }
@@ -295,9 +301,12 @@ private fun SignalBadge(label: String) {
 }
 
 @Composable
-private fun AppsScreen(model: SignalsModel, draft: Map<String, Int>, query: String, modifier: Modifier, onQuery: (String) -> Unit, onApp: (String) -> Unit, onDiscard: () -> Unit) {
+private fun AppsScreen(model: SignalsModel, draft: Map<String, Int>, query: String, enabledOnly: Boolean, modifier: Modifier, onQuery: (String) -> Unit, onEnabledOnly: (Boolean) -> Unit, onApp: (String) -> Unit, onDiscard: () -> Unit) {
     val apps = model.apps
-    val filtered = apps?.filter { it.label.contains(query, true) }
+    val search = query.trim()
+    val filtered = apps?.filter {
+        (!enabledOnly || draft.containsKey(it.packageName)) && (it.label.contains(search, true) || it.packageName.contains(search, true))
+    }
     LazyColumn(modifier.fillMaxHeight(), contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item {
             Text(stringResource(R.string.selected_count, draft.size), style = MaterialTheme.typography.titleMedium)
@@ -311,11 +320,29 @@ private fun AppsScreen(model: SignalsModel, draft: Map<String, Int>, query: Stri
                 modifier = Modifier.fillMaxWidth(), leadingIcon = { Icon(Icons.Default.Search, null) },
                 trailingIcon = { if (query.isNotEmpty()) IconButton(onClick = { onQuery("") }) { Icon(Icons.Default.Close, stringResource(R.string.clear)) } })
         }
+        item {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                FilterChip(selected = !enabledOnly, onClick = { onEnabledOnly(false) }, modifier = Modifier.testTag("app-filter-all"), label = { Text(stringResource(R.string.all_apps)) })
+                FilterChip(selected = enabledOnly, onClick = { onEnabledOnly(true) }, modifier = Modifier.testTag("app-filter-enabled"), label = { Text(stringResource(R.string.enabled_only)) })
+            }
+        }
         if (apps == null) item { LinearProgressIndicator(Modifier.fillMaxWidth()); Text(stringResource(R.string.loading_apps)) }
-        else if (filtered.isNullOrEmpty()) item { Text(stringResource(R.string.no_search_results)) }
+        else if (filtered.isNullOrEmpty()) item {
+            if (enabledOnly && search.isEmpty()) {
+                Text(stringResource(R.string.no_enabled_apps), style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.no_enabled_apps_help), style = MaterialTheme.typography.bodyMedium)
+            } else Text(stringResource(if (enabledOnly) R.string.no_enabled_search_results else R.string.no_search_results))
+        }
         else items(filtered, key = { it.packageName }) { app ->
             OutlinedCard(onClick = { onApp(app.packageName) }, modifier = Modifier.fillMaxWidth().testTag("app-${app.packageName}")) {
                 ListItem(headlineContent = { Text(app.label) },
+                    leadingContent = {
+                        val icon = app.icon
+                        if (icon != null) Image(icon, contentDescription = null, modifier = Modifier.size(40.dp).testTag("app-icon-${app.packageName}"))
+                        else Surface(Modifier.size(40.dp).testTag("app-icon-${app.packageName}"), shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.secondaryContainer) {
+                            Box(contentAlignment = Alignment.Center) { Text(app.label.firstOrNull()?.takeIf { it.isLetterOrDigit() }?.uppercaseChar()?.toString() ?: "?") }
+                        }
+                    },
                     supportingContent = { Text(draft[app.packageName]?.let { stringResource(R.string.signal_name, Rules.profileName(it)) } ?: stringResource(R.string.off)) },
                     trailingContent = { Icon(Icons.Default.KeyboardArrowRight, null) })
             }
@@ -338,7 +365,7 @@ private fun PatternsScreen(model: SignalsModel, modifier: Modifier, onPreview: (
                     }
                     GroupDiagram(pattern)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        FilledTonalButton(enabled = !model.state.running && !model.busy && model.state.bluetoothOn, onClick = { onPreview(profile) }) { Text(stringResource(R.string.preview)) }
+                        FilledTonalButton(enabled = !model.state.running && model.timeAlerts.active.isEmpty() && !model.busy && model.state.bluetoothOn, onClick = { onPreview(profile) }) { Text(stringResource(R.string.preview)) }
                         OutlinedButton(onClick = { onEdit(profile) }) { Text(stringResource(R.string.edit)) }
                     }
                 }

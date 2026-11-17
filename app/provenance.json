@@ -13,14 +13,21 @@
     "relay releases its GATT client after each command; no persistent idle warm link",
     "respect system bar and display cutout insets in native Android UI",
     "Material 3 Compose UI, dynamic light/dark theme, adaptive navigation, accessible groups and searchable app assignments",
-    "Gradle wrapper and pinned Compose build; UI/local-preference instrumentation tests"
+    "Gradle wrapper and pinned Compose build; UI/local-preference instrumentation tests",
+    "persistent countdown and local-calendar alarms with exact scheduling, reboot/time-change recovery, Stop/Snooze, and bounded foreground ringing",
+    "owner-scoped serialization and cancellation shared by previews, notification forwarding, and scheduled alerts",
+    "Material 3 alarm clock dial and keyboard input with system 12/24-hour display",
+    "cached app icons and enabled-only app filtering with draft-aware search and missing-assignment fallback"
   ],
   "permissions": [
     "BLUETOOTH_CONNECT",
     "FOREGROUND_SERVICE",
     "FOREGROUND_SERVICE_CONNECTED_DEVICE",
     "POST_NOTIFICATIONS",
-    "WAKE_LOCK"
+    "WAKE_LOCK",
+    "SCHEDULE_EXACT_ALARM",
+    "RECEIVE_BOOT_COMPLETED",
+    "FOREGROUND_SERVICE_MEDIA_PLAYBACK"
   ],
-  "automatic_operations": "Relay operates only after the user enables notification access and presses Start alerts; no boot auto-start."
+  "automatic_operations": "Notification forwarding still needs notification access and an explicit Start. User-scheduled timers/alarms fire independently and restore after reboot/unlock or app updates. The boot receiver does not start notification forwarding or ring old missed alarms."
 }
