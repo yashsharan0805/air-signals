@@ -1,8 +1,9 @@
-AIR SIGNALS — Android preview 0.7 source build (timers and alarms)
+AIR SIGNALS — Android preview 0.7 (timers and alarms)
 
 Version 0.7 adds a countdown timer, scheduled/weekday alarms, phone Stop/Snooze,
 optional phone alarm sound, reboot recovery, and separate scheduled-alert delivery.
-The downloadable 0.6 release predates these changes.
+The 0.7 release includes these changes, an Android-style alarm clock picker,
+installed app icons, and an Enabled only filter in the app selector.
 Version 0.6 added a saved Settings toggle for muting notifications while the phone
 is awake. The 0.6 build is checked on an Android 16 / API 36 emulator; its new
 feature has not yet been tested on a physical Fitbit. Version 0.5 was installed
@@ -74,7 +75,7 @@ locked-phone burst. Version 0.4 disables the persistent idle Bluetooth client;
 two short device tests passed with Google Health alarms loading afterward.
 This supports the change but does not establish the cause of prior stalls. Shared-channel handoff
 was observed in app diagnostics; this does not prove uninterrupted Google Health
-sync. Battery drain, long-term reliability, out-of-range recovery, reboot behavior,
+sync. Battery drain, long-term reliability, out-of-range recovery, physical-device reboot behavior,
 all third-party app notification types and all firmware versions remain unverified.
 User confirmation is needed for felt vibrations; transport success alone is not proof.
 
@@ -95,3 +96,5 @@ Calibration evidence: validation/air-signals-calibration.json
 Notification integration evidence: validation/air-signals-notification-tests.json
 0.5 UI and phone installation evidence: validation/ui-0.5.json
 0.6 build and emulator evidence: validation/screen-on-mute.json
+0.7 timer/alarm build and emulator evidence: validation/timers-alarms-0.7.json
+0.7 app-picker checks: validation/app-picker-0.7.json

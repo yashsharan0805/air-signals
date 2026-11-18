@@ -4,7 +4,7 @@
 
 Air Signals listens for notifications from apps you choose and sends a recognizable group of buzzes to your wrist. It runs locally on your phone, with a Material 3 interface and an explicit **Start alerts / Stop alerts** control.
 
-> **Experimental preview · current source 0.7** — the transport was previously tested on one Fitbit Air firmware and a Galaxy S25+; timers, alarms, and screen-on muting have emulator validation. The published download below remains 0.6. The transport uses undocumented device behavior; battery impact and long-term reliability are still being evaluated. This is an independent project, unaffiliated with Google or Fitbit.
+> **Experimental preview · 0.7** — the transport was previously tested on one Fitbit Air firmware and a Galaxy S25+; timers, alarms, and screen-on muting have emulator validation. The transport uses undocumented device behavior; battery impact and long-term reliability are still being evaluated. This is an independent project, unaffiliated with Google or Fitbit.
 
 <img src="docs/images/home.png" alt="Air Signals home screen with connection permissions and alert controls" width="280" /> <img src="docs/images/patterns.png" alt="Three editable wrist signals with one, two, and three groups" width="280" /> <img src="docs/images/settings.png" alt="Settings toggle for muting Fitbit notifications while the phone screen is on" width="280" />
 
@@ -14,7 +14,7 @@ Air Signals listens for notifications from apps you choose and sends a recogniza
 - Edit each signal to send **1–3 groups**, with an approximate **1.2–3.0 second gap** between groups.
 - Preview a signal after stopping alerts and confirming the preview.
 - Combine short bursts from the same app, expire stale alerts, and limit repeated deliveries.
-- In the 0.7 source build, run a countdown timer or schedule one-time/weekday alarms with phone Stop/Snooze controls, optional phone alarm sound, and A/B/C wrist signals.
+- Run a countdown timer or schedule one-time/weekday alarms with phone Stop/Snooze controls, optional phone alarm sound, and A/B/C wrist signals.
 - Open **Settings → Mute while phone screen is on** to skip notification vibrations while your phone is awake. This option is off by default.
 - Check that the Air's original vibration strength is restored after each completed operation.
 - Use wallpaper-based colors, system light/dark mode, scalable text, and a navigation rail in wide windows.
@@ -35,14 +35,14 @@ Only ARM64 native libraries are included. Other tracker models, firmware version
 
 ## Download and install
 
-Get the **[0.6 preview APK (ARM64)](https://github.com/yashsharan0805/air-signals/releases/download/v0.6-preview/air-signals-0.6.apk)** from [GitHub Releases](https://github.com/yashsharan0805/air-signals/releases/tag/v0.6-preview). The release also includes a [SHA-256 checksum](https://github.com/yashsharan0805/air-signals/releases/download/v0.6-preview/air-signals-0.6.sha256).
+Get the **[0.7 preview APK (ARM64)](https://github.com/yashsharan0805/air-signals/releases/download/v0.7-preview/air-signals-0.7.apk)** from [GitHub Releases](https://github.com/yashsharan0805/air-signals/releases/tag/v0.7-preview). The release also includes [SHA-256 checksums](https://github.com/yashsharan0805/air-signals/releases/download/v0.7-preview/air-signals-0.7.sha256), a source snapshot, and validation reports.
 
 Download the APK on your Android phone and open it to install. Android may ask you to allow installations from the browser or file manager you use. This is a **signed debug preview** for ARM64 phones running Android 12L / API 32 or newer.
 
 For an authorized USB-connected device:
 
 ```sh
-adb install -r air-signals-0.6.apk
+adb install -r air-signals-0.7.apk
 ```
 
 Then follow [Set up your signals](#set-up-your-signals). Updating an existing installation requires the same signing identity.
@@ -91,11 +91,11 @@ When enabled, notifications received while the phone is awake are discarded. Wak
 
 The check uses Android's [`PowerManager.isInteractive()`](https://developer.android.com/reference/android/os/PowerManager#isInteractive()): the awake lock screen counts as screen on; a dozing Always On Display does not. Deliberate **Patterns → Preview** commands remain available while the screen is on. This setting is included in the 0.6 preview APK.
 
-## Timers and alarms (0.7 source build)
+## Timers and alarms
 
 <img src="docs/images/timer.png" alt="Running countdown with Pause, Cancel and Restart controls" width="280" /> <img src="docs/images/alarm-clock.png" alt="Android-style clock dial with AM/PM and optional keyboard entry" width="280" />
 
-Open **Timers** in the navigation bar, then choose **Timers** or **Alarms**. This feature is not included in the published 0.6 APK; build the current source to use it.
+Open **Timers** in the navigation bar, then choose **Timers** or **Alarms**. These features are included in the 0.7 preview APK.
 
 - Allow **Alarms & reminders** and phone notifications. Allow **Nearby devices** for wrist delivery; phone alarm sound can work without Bluetooth permission. Notification-listener access and selected app assignments are not required.
 - Start one countdown from one second to seven days. Pause/resume, cancel, or restart it; starting another replaces the current countdown.
@@ -167,6 +167,8 @@ There is no `INTERNET`, location, contacts, or health-data permission. Local pri
 The 0.5 UI tests cover setup gating, search, app assignment saving, pattern Save/Cancel, activity recreation, and screen capture. They exercise local UI/preferences and do not establish physical motor behavior. See the [UI report](docs/validation/ui-0.5.json), [calibration evidence](docs/validation/air-signals-calibration.json), and [notification trials](docs/validation/air-signals-notification-tests.json).
 
 The 0.6 screen-on mute release passed a new build, lint (zero errors, 29 warnings), and 13 emulator checks. Its Settings screen was reviewed in light mode and dark mode at 150% text size. See the [screen-on mute validation report](docs/validation/screen-on-mute.json). Physical Fitbit testing of this change remains pending.
+
+The 0.7 build and lint passed with zero errors and 36 warnings. The timer/alarm/clock baseline passed 50 emulator checks before the app-picker update; the final APK passed 11 targeted app-picker and UI checks. Timer recovery after process death and reboot was also verified on the emulator. See the [timer/alarm report](docs/validation/timers-alarms-0.7.json) and [app-picker report](docs/validation/app-picker-0.7.json). Physical Fitbit testing of the new timer/alarm delivery remains pending.
 
 **Google Health coexistence needs further testing.** An earlier build intermittently stalled its alarm list. The 0.4 change to release the idle Bluetooth client passed subsequent short checks with the alarm list loading. That does not establish uninterrupted sync or long-term compatibility.
 
